@@ -57,12 +57,17 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/fonts/
+    - assets/
+
   fonts:
       - family: Eina01
         fonts:
-          - asset: assets/fonts/Eina01-Regular.ttf
+          - asset: assets/fonts/eina-01-regular.ttf
             weight: 400
-          - asset: assets/fonts/Eina01-Semibold.ttf
+          - asset: assets/fonts/eina-01-semibold.ttf
             weight: 600
   # To add assets to your application, add an assets section, like this:
   # assets:

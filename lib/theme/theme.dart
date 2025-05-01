@@ -11,9 +11,9 @@ class AppTheme {
       primaryColor: AppColors.accentActive,
       canvasColor: AppColors.appBackground,
       textTheme: TextTheme(
-        bodyText1: TextStyles.task,
-        bodyText2: TextStyles.project,
-        subtitle1: TextStyles.username,
+        bodyLarge: TextStyles.task,
+        bodyMedium: TextStyles.project,
+        bodySmall: TextStyles.username,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,

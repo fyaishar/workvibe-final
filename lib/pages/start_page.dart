@@ -44,7 +44,7 @@ class SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: Theme.of(context).textTheme.subtitle1,
+      style: Theme.of(context).textTheme.bodyLarge,
     );
   }
 }
@@ -85,7 +85,12 @@ class StyledControls extends StatelessWidget {
         ),
         const SizedBox(height: Spacing.cardMarginVertical),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            // Add proper handling
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Submit button pressed')),
+            );
+          },
           child: const Text('Submit'),
         ),
       ],
