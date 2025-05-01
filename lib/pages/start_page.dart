@@ -6,7 +6,7 @@ import '../theme/spacing.dart';
 
 /// A page showcasing all themed styles: text, inputs, buttons, and session cards.
 class StartPage extends StatelessWidget {
-  const StartPage({Key? key}) : super(key: key);
+  const StartPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class StartPage extends StatelessWidget {
 
 class SectionHeader extends StatelessWidget {
   final String title;
-  const SectionHeader({Key? key, required this.title}) : super(key: key);
+  const SectionHeader({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class SectionHeader extends StatelessWidget {
 }
 
 class StyledTextExamples extends StatelessWidget {
-  const StyledTextExamples({Key? key}) : super(key: key);
+  const StyledTextExamples({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,7 @@ class StyledTextExamples extends StatelessWidget {
 }
 
 class StyledControls extends StatelessWidget {
-  const StyledControls({Key? key}) : super(key: key);
+  const StyledControls({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +101,7 @@ class StyledControls extends StatelessWidget {
 enum SessionStatus { active, paused }
 
 class StyledSessionCards extends StatelessWidget {
-  const StyledSessionCards({Key? key}) : super(key: key);
+  const StyledSessionCards({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -138,14 +138,14 @@ class SessionCardExample extends StatelessWidget {
   final int elapsedMinutes;
 
   const SessionCardExample({
-    Key? key,
+    super.key,
     required this.username,
     required this.task,
     required this.project,
     required this.isPersonal,
     required this.status,
     required this.elapsedMinutes,
-  }) : super(key: key);
+  });
 
   double getBorderWidth() {
     if (elapsedMinutes >= 300) return 7;
