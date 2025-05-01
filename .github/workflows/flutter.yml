@@ -11,11 +11,30 @@ jobs:
     runs-on: macos-latest
 
     steps:
+      # 1. Check out your repo
       - uses: actions/checkout@v3
+
+      # 2. Install Flutter
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 'stable'
-      - run: flutter pub get
-      - run: flutter test
-      - run: flutter build web --release
-      - run: flutter build macos --release
+
+      # 3. Get dependencies
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 4. Static analysis
+      - name: Static analysis
+        run: flutter analyze --fatal-infos --fatal-warnings
+
+      # 5. Run unit & widget tests
+      - name: Run tests
+        run: flutter test
+
+      # 6. Build for web
+      - name: Build web
+        run: flutter build web --release
+
+      # 7. Build for macOS
+      - name: Build macOS
+        run: flutter build macos --release
