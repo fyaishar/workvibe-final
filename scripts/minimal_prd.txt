@@ -1,0 +1,35 @@
+<context>
+# Work Vibe - Minimal PRD
+
+# Overview
+Work Vibe is a real-time task sharing application.
+
+# Core Features
+1. Share current task
+2. View others' tasks in real-time
+3. Basic session management
+</context>
+
+<PRD>
+# Technical Stack
+- Frontend: Flutter
+- Backend: Node.js
+- Database: Firebase
+
+# Development Roadmap
+- Setup project structure
+- Implement basic UI
+- Add real-time functionality
+
+# Logical Dependency Chain
+1. Project setup
+2. UI implementation
+3. Real-time features
+
+# Risks and Mitigations
+- Technical: Ensure proper WebSocket handling
+- Performance: Optimize real-time updates
+
+# Appendix
+N/A
+</PRD> 

@@ -1,4 +1,4 @@
-// lib/theme/text_styles.dart
+// lib/app/theme/text_styles.dart
 import 'package:flutter/material.dart';
 import 'colors.dart';
 

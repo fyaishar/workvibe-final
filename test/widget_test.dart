@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:finalworkvibe/pages/start_page.dart';
+import 'package:finalworkvibe/features/session/presentation/start_page.dart';
 
 void main() {
   testWidgets('StartPage smoke test', (WidgetTester tester) async {

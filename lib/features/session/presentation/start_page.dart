@@ -1,8 +1,8 @@
-// lib/pages/start_page.dart
+// lib/features/session/presentation/start_page.dart
 import 'package:flutter/material.dart';
-import '../theme/colors.dart';
-import '../theme/text_styles.dart';
-import '../theme/spacing.dart';
+import '../../../app/theme/colors.dart';
+import '../../../app/theme/text_styles.dart';
+import '../../../app/theme/spacing.dart';
 
 /// A page showcasing all themed styles: text, inputs, buttons, and session cards.
 class StartPage extends StatelessWidget {

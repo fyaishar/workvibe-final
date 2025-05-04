@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "strict": true,
+    "lib": ["ES2022", "DOM"],
+    "types": ["@supabase/supabase-js"],
+    "skipLibCheck": true
+  }
+} 

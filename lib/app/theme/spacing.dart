@@ -1,4 +1,4 @@
-// lib/theme/spacing.dart
+// lib/app/theme/spacing.dart
 class Spacing {
   static const double cardPadding = 16.0;
   static const double cardMarginVertical = 8.0;
