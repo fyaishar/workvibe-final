@@ -21,7 +21,7 @@ class SupabaseService {
   /// For debugging - contains Supabase connection status
   static String platformInfo = kIsWeb 
       ? 'Running on Web'
-      : Platform.operatingSystem + ' ' + Platform.operatingSystemVersion;
+      : '${Platform.operatingSystem} ${Platform.operatingSystemVersion}';
       
   /// Authenticates a user with email and password
   static Future<AuthResponse> signInWithEmail(String email, String password) async {
@@ -123,6 +123,218 @@ class SupabaseService {
     }
   }
   
+  /// Signs out the current user
+  static Future<void> signOut() async {
+    try {
+      await client.auth.signOut();
+    } catch (e) {
+      // Handle alternative approach for MacOS if needed
+      if (!kIsWeb && Platform.isMacOS && e.toString().contains('Operation not permitted')) {
+        // Fall back to a custom approach if regular signOut fails on MacOS
+        try {
+          final response = await http.post(
+            Uri.parse('${Env.supabaseUrl}/auth/v1/logout'),
+            headers: {
+              'apikey': Env.supabaseAnonKey,
+              'Authorization': 'Bearer ${session?.accessToken ?? ''}',
+              'Content-Type': 'application/json',
+            },
+          );
+          
+          if (response.statusCode != 200) {
+            throw 'Sign out failed: ${response.body}';
+          }
+        } catch (httpError) {
+          throw 'Sign out failed: $httpError';
+        }
+      } else {
+        rethrow;
+      }
+    }
+  }
+  
+  /// Sends a password reset email to the specified email address
+  static Future<void> resetPassword(String email) async {
+    try {
+      await client.auth.resetPasswordForEmail(
+        email,
+        redirectTo: kIsWeb ? null : 'io.supabase.workvibe://reset-callback/',
+      );
+    } catch (e) {
+      // Handle alternative approach for MacOS if needed
+      if (!kIsWeb && Platform.isMacOS && e.toString().contains('Operation not permitted')) {
+        try {
+          final response = await http.post(
+            Uri.parse('${Env.supabaseUrl}/auth/v1/recover'),
+            headers: {
+              'apikey': Env.supabaseAnonKey,
+              'Content-Type': 'application/json',
+            },
+            body: '{"email":"$email"}',
+          );
+          
+          if (response.statusCode != 200) {
+            throw 'Password reset failed: ${response.body}';
+          }
+        } catch (httpError) {
+          throw 'Password reset failed: $httpError';
+        }
+      } else {
+        rethrow;
+      }
+    }
+  }
+  
+  /// Updates the user's password with a new one after reset
+  static Future<void> updatePassword(String newPassword) async {
+    try {
+      await client.auth.updateUser(
+        UserAttributes(
+          password: newPassword,
+        ),
+      );
+    } catch (e) {
+      // Handle alternative approach for MacOS if needed
+      if (!kIsWeb && Platform.isMacOS && e.toString().contains('Operation not permitted')) {
+        try {
+          final response = await http.put(
+            Uri.parse('${Env.supabaseUrl}/auth/v1/user'),
+            headers: {
+              'apikey': Env.supabaseAnonKey,
+              'Authorization': 'Bearer ${session?.accessToken ?? ''}',
+              'Content-Type': 'application/json',
+            },
+            body: '{"password":"$newPassword"}',
+          );
+          
+          if (response.statusCode != 200) {
+            throw 'Password update failed: ${response.body}';
+          }
+        } catch (httpError) {
+          throw 'Password update failed: $httpError';
+        }
+      } else {
+        rethrow;
+      }
+    }
+  }
+  
+  /// Sign in with Google
+  static Future<bool> signInWithGoogle() async {
+    try {
+      final result = await client.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: kIsWeb ? null : 'io.supabase.workvibe://login-callback/',
+      );
+      return result;
+    } catch (e) {
+      // If macOS has issues, we cannot easily handle OAuth via REST API
+      // as it requires a web browser redirect flow
+      if (!kIsWeb && Platform.isMacOS && e.toString().contains('Operation not permitted')) {
+        throw 'Google sign-in is not supported on this platform with current permissions. Try email sign-in instead.';
+      }
+      rethrow;
+    }
+  }
+  
+  /// Sign in with Apple
+  static Future<bool> signInWithApple() async {
+    try {
+      final result = await client.auth.signInWithOAuth(
+        OAuthProvider.apple,
+        redirectTo: kIsWeb ? null : 'io.supabase.workvibe://login-callback/',
+      );
+      return result;
+    } catch (e) {
+      // If macOS has issues, we cannot easily handle OAuth via REST API
+      // as it requires a web browser redirect flow
+      if (!kIsWeb && Platform.isMacOS && e.toString().contains('Operation not permitted')) {
+        throw 'Apple sign-in is not supported on this platform with current permissions. Try email sign-in instead.';
+      }
+      rethrow;
+    }
+  }
+  
+  /// Callback handler for social auth redirects
+  static Future<bool> handleAuthRedirect(Uri uri) async {
+    try {
+      // Extract the fragment or query parameters from the URI
+      final hasFragment = uri.toString().contains('#');
+      final hasAccessToken = uri.toString().contains('access_token');
+      
+      if ((hasFragment || hasAccessToken) && (uri.path.contains('login-callback') || uri.path.contains('reset-callback'))) {
+        final response = await client.auth.getSessionFromUrl(uri);
+        return response.session != null;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+  
+  /// Manually refreshes the session if needed
+  static Future<Session?> refreshSession() async {
+    try {
+      if (session == null) return null;
+      
+      // Check if token needs refresh (if less than 60 seconds remaining)
+      final expiresAt = session!.expiresAt;
+      if (expiresAt != null) {
+        final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+        final expiresIn = expiresAt - now;
+        
+        if (expiresIn < 60) {
+          final response = await client.auth.refreshSession();
+          return response.session;
+        }
+      }
+      
+      return session;
+    } catch (e) {
+      // Try platform-specific approach for MacOS if needed
+      if (!kIsWeb && Platform.isMacOS && e.toString().contains('Operation not permitted')) {
+        try {
+          final response = await http.post(
+            Uri.parse('${Env.supabaseUrl}/auth/v1/token?grant_type=refresh_token'),
+            headers: {
+              'apikey': Env.supabaseAnonKey,
+              'Content-Type': 'application/json',
+            },
+            body: '{"refresh_token":"${session?.refreshToken}"}',
+          );
+          
+          if (response.statusCode == 200) {
+            // Force a full refresh after manual refresh
+            return (await client.auth.refreshSession()).session;
+          }
+        } catch (_) {
+          // Fail silently and return current session
+        }
+      }
+      return session;
+    }
+  }
+  
+  /// Sets up a periodic token refresh
+  static void setupTokenRefresh() {
+    // Refresh token every 30 minutes to ensure it doesn't expire
+    const refreshInterval = Duration(minutes: 30);
+    
+    Future<void> performRefresh() async {
+      if (isAuthenticated) {
+        await refreshSession();
+      }
+    }
+    
+    // Initial refresh
+    performRefresh();
+    
+    // Setup periodic refresh
+    Stream.periodic(refreshInterval).listen((_) {
+      performRefresh();
+    });
+  }
+  
   /// Test connection to Supabase with detailed diagnostics
   static Future<String> testConnection() async {
     try {
@@ -153,8 +365,8 @@ class SupabaseService {
           final request = await httpClient.getUrl(Uri.parse('$url/rest/v1/'));
           request.headers.add('apikey', Env.supabaseAnonKey);
           
-          final response = await request.close();
-          connectionInfo += 'HttpClient response: ${response.statusCode}\n';
+          final httpResponse = await request.close();
+          connectionInfo += 'HttpClient response: ${httpResponse.statusCode}\n';
           
           httpClient.close();
         } catch (e) {

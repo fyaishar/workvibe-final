@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../services/supabase_service.dart';
+import '../state/auth_state.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -50,60 +51,47 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _signIn() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final response = await SupabaseService.signInWithEmail(
-        _emailController.text.trim(),
-        _passwordController.text,
-      );
-
-      if (response.user == null) {
-        setState(() {
-          _errorMessage = 'Login failed';
-          _isLoading = false;
-        });
-        return;
-      }
-
+    // Use Riverpod auth provider to sign in
+    await ref.read(authProvider.notifier).signInWithEmail(
+      _emailController.text.trim(),
+      _passwordController.text,
+    );
+    
+    // Get the auth state after sign in attempt
+    final authState = ref.read(authProvider);
+    
+    // Check for errors
+    if (authState.error != null) {
+      setState(() {
+        _errorMessage = authState.error;
+      });
+    } else if (authState.isAuthenticated) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Login successful!')),
         );
       }
-    } catch (e) {
-      setState(() {
-        _errorMessage = e.toString();
-        _isLoading = false;
-      });
     }
   }
 
   Future<void> _signUp() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final response = await SupabaseService.signUpWithEmail(
-        _emailController.text.trim(),
-        _passwordController.text,
-      );
-
-      if (response.user == null) {
-        setState(() {
-          _errorMessage = 'Sign up failed';
-          _isLoading = false;
-        });
-        return;
-      }
-
+    // Use Riverpod auth provider to sign up
+    await ref.read(authProvider.notifier).signUpWithEmail(
+      _emailController.text.trim(),
+      _passwordController.text,
+    );
+    
+    // Get the auth state after sign up attempt
+    final authState = ref.read(authProvider);
+    
+    // Check for errors
+    if (authState.error != null) {
+      setState(() {
+        _errorMessage = authState.error;
+      });
+    } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -111,22 +99,77 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ),
         );
       }
-    } catch (e) {
+    }
+  }
+
+  Future<void> _resetPassword() async {
+    // Validate just the email
+    if (_emailController.text.isEmpty || !_emailController.text.contains('@')) {
       setState(() {
-        _errorMessage = e.toString();
-        _isLoading = false;
+        _errorMessage = 'Please enter a valid email address';
       });
-    } finally {
+      return;
+    }
+
+    // Use Riverpod auth provider to request password reset
+    await ref.read(authProvider.notifier).resetPassword(
+      _emailController.text.trim(),
+    );
+    
+    // Get the auth state after reset attempt
+    final authState = ref.read(authProvider);
+    
+    // Check for errors
+    if (authState.error != null) {
+      setState(() {
+        _errorMessage = authState.error;
+      });
+    } else {
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Password reset email sent. Please check your inbox.'),
+          ),
+        );
       }
+    }
+  }
+  
+  Future<void> _signInWithGoogle() async {
+    await ref.read(authProvider.notifier).signInWithGoogle();
+    
+    // Error handling is managed in the state
+    final authState = ref.read(authProvider);
+    if (authState.error != null) {
+      setState(() {
+        _errorMessage = authState.error;
+      });
+    }
+  }
+  
+  Future<void> _signInWithApple() async {
+    await ref.read(authProvider.notifier).signInWithApple();
+    
+    // Error handling is managed in the state
+    final authState = ref.read(authProvider);
+    if (authState.error != null) {
+      setState(() {
+        _errorMessage = authState.error;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Listen to auth state changes 
+    final authState = ref.watch(authProvider);
+    _isLoading = authState.isLoading;
+    
+    // Update error message from auth state if available
+    if (authState.error != null && _errorMessage != authState.error) {
+      _errorMessage = authState.error;
+    }
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('WorkVibe Login'),
@@ -238,6 +281,42 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 OutlinedButton(
                   onPressed: _isLoading ? null : _signUp,
                   child: const Text('Create Account'),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: _isLoading ? null : _resetPassword,
+                  child: const Text('Forgot Password?'),
+                ),
+                const SizedBox(height: 24),
+                const Row(
+                  children: [
+                    Expanded(child: Divider()),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text('OR'),
+                    ),
+                    Expanded(child: Divider()),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.g_mobiledata),
+                  label: const Text('Sign in with Google'),
+                  onPressed: _isLoading ? null : _signInWithGoogle,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.apple),
+                  label: const Text('Sign in with Apple'),
+                  onPressed: _isLoading ? null : _signInWithApple,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ],
             ),
