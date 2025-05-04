@@ -66,16 +66,20 @@ class SupabaseRealtimeService {
     
     // Add listeners for session events
     channel
-      .on(RealtimeListenTypes.postgresChanges,
-        ChannelFilter(event: 'INSERT', schema: 'public', table: 'sessions'),
-        (payload, [ref]) {
+      .onPostgresChanges(
+        event: PostgresChangeEvent.insert,
+        schema: 'public',
+        table: 'sessions',
+        callback: (payload) {
           debugPrint('New session started: ${payload.toString()}');
           // Handle session creation event
           _handleSessionEvent('start-session', payload.newRecord);
         })
-      .on(RealtimeListenTypes.postgresChanges,
-        ChannelFilter(event: 'UPDATE', schema: 'public', table: 'sessions'),
-        (payload, [ref]) {
+      .onPostgresChanges(
+        event: PostgresChangeEvent.update,
+        schema: 'public',
+        table: 'sessions',
+        callback: (payload) {
           final newRecord = payload.newRecord;
           final oldRecord = payload.oldRecord;
           
@@ -106,14 +110,18 @@ class SupabaseRealtimeService {
     
     // Add listeners for task events
     channel
-      .on(RealtimeListenTypes.postgresChanges,
-        ChannelFilter(event: 'INSERT', schema: 'public', table: 'tasks'),
-        (payload, [ref]) {
+      .onPostgresChanges(
+        event: PostgresChangeEvent.insert,
+        schema: 'public',
+        table: 'tasks',
+        callback: (payload) {
           _handleTaskEvent('create-task', payload.newRecord);
         })
-      .on(RealtimeListenTypes.postgresChanges,
-        ChannelFilter(event: 'UPDATE', schema: 'public', table: 'tasks'),
-        (payload, [ref]) {
+      .onPostgresChanges(
+        event: PostgresChangeEvent.update,
+        schema: 'public',
+        table: 'tasks',
+        callback: (payload) {
           final newRecord = payload.newRecord;
           final oldRecord = payload.oldRecord;
           
@@ -135,14 +143,18 @@ class SupabaseRealtimeService {
     
     // Add listeners for project events
     channel
-      .on(RealtimeListenTypes.postgresChanges,
-        ChannelFilter(event: 'INSERT', schema: 'public', table: 'projects'),
-        (payload, [ref]) {
+      .onPostgresChanges(
+        event: PostgresChangeEvent.insert,
+        schema: 'public',
+        table: 'projects',
+        callback: (payload) {
           _handleProjectEvent('create-project', payload.newRecord);
         })
-      .on(RealtimeListenTypes.postgresChanges,
-        ChannelFilter(event: 'UPDATE', schema: 'public', table: 'projects'),
-        (payload, [ref]) {
+      .onPostgresChanges(
+        event: PostgresChangeEvent.update,
+        schema: 'public',
+        table: 'projects',
+        callback: (payload) {
           _handleProjectEvent('update-project', payload.newRecord);
         });
         
@@ -156,14 +168,18 @@ class SupabaseRealtimeService {
     
     // Add listeners for room events
     channel
-      .on(RealtimeListenTypes.postgresChanges,
-        ChannelFilter(event: 'INSERT', schema: 'public', table: 'rooms'),
-        (payload, [ref]) {
+      .onPostgresChanges(
+        event: PostgresChangeEvent.insert,
+        schema: 'public',
+        table: 'rooms',
+        callback: (payload) {
           _handleRoomEvent('create-room', payload.newRecord);
         })
-      .on(RealtimeListenTypes.postgresChanges,
-        ChannelFilter(event: 'UPDATE', schema: 'public', table: 'rooms'),
-        (payload, [ref]) {
+      .onPostgresChanges(
+        event: PostgresChangeEvent.update,
+        schema: 'public',
+        table: 'rooms',
+        callback: (payload) {
           final newRecord = payload.newRecord;
           
           // If active_sessions changed
@@ -190,20 +206,20 @@ class SupabaseRealtimeService {
     
     // Add presence event handlers using the correct API
     presenceChannel
-      .on(RealtimeListenTypes.presence, ChannelFilter(event: 'SYNC'), (payload, [_]) {
+      .onPresenceSync((payload) {
         final presenceState = presenceChannel.presenceState();
         _handlePresenceEvent('presence-sync', presenceState);
       })
-      .on(RealtimeListenTypes.presence, ChannelFilter(event: 'JOIN'), (payload, [_]) {
+      .onPresenceJoin((payload) {
         _handlePresenceEvent('presence-join', payload);
       })
-      .on(RealtimeListenTypes.presence, ChannelFilter(event: 'LEAVE'), (payload, [_]) {
+      .onPresenceLeave((payload) {
         _handlePresenceEvent('presence-leave', payload);
       });
     
     // Subscribe to presence channel
     presenceChannel.subscribe((status, [_]) async {
-      if (status == 'SUBSCRIBED') {
+      if (status == RealtimeSubscribeStatus.subscribed) {
         try {
           await presenceChannel.track({
             'user_id': userId,
