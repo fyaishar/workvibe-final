@@ -218,7 +218,7 @@ class SupabaseRealtimeService {
       });
     
     // Subscribe to presence channel
-    presenceChannel.subscribe((status, [_]) async {
+    presenceChannel.subscribe((status, [error]) async {
       if (status == RealtimeSubscribeStatus.subscribed) {
         try {
           await presenceChannel.track({
