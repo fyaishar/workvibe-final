@@ -2,57 +2,116 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:async';
+
 import 'app/app.dart';
 import 'core/config/riverpod_config.dart';
 import 'config/env.dart';
 import 'services/supabase_service.dart';
+import 'services/error/index.dart';
+
+// Global logging service instance for use in error handling
+final LoggingService _logger = LoggingService();
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  // Set up global error handling
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    _logger.error(
+      'Flutter error caught by global handler',
+      category: LogCategory.ui,
+      error: details.exception,
+      stackTrace: details.stack,
+      additionalData: {
+        'library': details.library ?? 'unknown',
+        'context': details.context?.toString() ?? 'none',
+      },
+    );
+  };
+
+  // Handle errors that are not caught by Flutter's error handling
+  PlatformDispatcher.instance.onError = (error, stack) {
+    _logger.fatal(
+      'Uncaught platform error',
+      category: LogCategory.general,
+      error: error,
+      stackTrace: stack,
+    );
+    return true; // Returning true indicates we've handled the error
+  };
   
-  // Initialize Supabase with auth persistence
-  await Supabase.initialize(
-    url: Env.supabaseUrl,
-    anonKey: Env.supabaseAnonKey,
-    authOptions: const FlutterAuthClientOptions(
-      authFlowType: AuthFlowType.pkce,
-    ),
-    debug: true, // Set to false in production
-  );
-  
-  // Set up token refresh mechanism
-  SupabaseService.setupTokenRefresh();
-  
-  // Set up auth state change listener
-  Supabase.instance.client.auth.onAuthStateChange.listen((data) {
-    final AuthChangeEvent event = data.event;
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
     
-    // Handle different auth events
-    switch (event) {
-      case AuthChangeEvent.signedIn:
-        debugPrint('User signed in: ${data.session?.user.email}');
-        break;
-      case AuthChangeEvent.signedOut:
-        debugPrint('User signed out');
-        break;
-      case AuthChangeEvent.userUpdated:
-        debugPrint('User updated: ${data.session?.user.email}');
-        break;
-      case AuthChangeEvent.passwordRecovery:
-        debugPrint('Password recovery requested: ${data.session?.user.email}');
-        break;
-      case AuthChangeEvent.tokenRefreshed:
-        debugPrint('Token refreshed');
-        break;
-      default:
-        debugPrint('Auth event: $event');
-    }
+    // Initialize Supabase with auth persistence
+    await Supabase.initialize(
+      url: Env.supabaseUrl,
+      anonKey: Env.supabaseAnonKey,
+      authOptions: const FlutterAuthClientOptions(
+        authFlowType: AuthFlowType.pkce,
+      ),
+      debug: true, // Set to false in production
+    );
+    
+    // Set up token refresh mechanism
+    SupabaseService.setupTokenRefresh();
+    
+    // Set up auth state change listener
+    Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+      final AuthChangeEvent event = data.event;
+      
+      // Handle different auth events
+      switch (event) {
+        case AuthChangeEvent.signedIn:
+          _logger.info(
+            'User signed in',
+            category: LogCategory.auth,
+            additionalData: {'email': data.session?.user.email},
+          );
+          break;
+        case AuthChangeEvent.signedOut:
+          _logger.info('User signed out', category: LogCategory.auth);
+          break;
+        case AuthChangeEvent.userUpdated:
+          _logger.info(
+            'User updated',
+            category: LogCategory.auth,
+            additionalData: {'email': data.session?.user.email},
+          );
+          break;
+        case AuthChangeEvent.passwordRecovery:
+          _logger.info(
+            'Password recovery requested',
+            category: LogCategory.auth,
+            additionalData: {'email': data.session?.user.email},
+          );
+          break;
+        case AuthChangeEvent.tokenRefreshed:
+          _logger.debug('Token refreshed', category: LogCategory.auth);
+          break;
+        default:
+          _logger.debug(
+            'Auth event',
+            category: LogCategory.auth,
+            additionalData: {'event': event.toString()},
+          );
+      }
+    });
+    
+    runApp(
+      ProviderScope(
+        observers: [RiverpodLogger()],
+        child: const MyApp(),
+      ),
+    );
+  }, (error, stackTrace) {
+    // This handles any errors not caught by the Flutter framework
+    _logger.fatal(
+      'Uncaught error in app',
+      category: LogCategory.general,
+      error: error,
+      stackTrace: stackTrace,
+    );
   });
-  
-  runApp(
-    ProviderScope(
-      observers: [RiverpodLogger()],
-      child: const MyApp(),
-    ),
-  );
 } 

@@ -5,6 +5,8 @@ import '../config/env.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart' show visibleForTesting;
 
+import 'error/index.dart';
+
 /// Service class to manage Supabase client instance 
 class SupabaseService {
   /// Get the Supabase client instance
@@ -27,6 +29,11 @@ class SupabaseService {
       ? 'Running on Web'
       : '${Platform.operatingSystem} ${Platform.operatingSystemVersion}';
       
+  /// Error handling services
+  static final ErrorService _errorService = ErrorService();
+  static final LoggingService _loggingService = LoggingService();
+  static final SupabaseErrorHandler _errorHandler = SupabaseErrorHandler();
+
   /// Test-only method to override the client for unit testing
   @visibleForTesting
   static void testSetClient(SupabaseClient mockClient) {
@@ -54,17 +61,32 @@ class SupabaseService {
       
   /// Authenticates a user with email and password
   static Future<AuthResponse> signInWithEmail(String email, String password) async {
+    _loggingService.info(
+      'Attempting to sign in user with email',
+      category: LogCategory.auth,
+      additionalData: {'email': email},
+    );
+    
     try {
       // Use a different approach for Mac (which often has permission issues)
       if (!kIsWeb && Platform.isMacOS) {
         // First try the regular approach, catch specific OS Permission errors
         try {
-          return await client.auth.signInWithPassword(
-            email: email,
-            password: password,
+          return await _errorHandler.executeWithRetry(
+            operationName: 'signInWithPassword',
+            operation: () => client.auth.signInWithPassword(
+              email: email,
+              password: password,
+            ),
           );
         } catch (e) {
           if (e.toString().contains('Operation not permitted')) {
+            _loggingService.warning(
+              'Standard auth failed on macOS, falling back to HTTP implementation',
+              category: LogCategory.auth,
+              error: e,
+            );
+            
             // Fall back to http package on permission errors
             final response = await http.post(
               Uri.parse('${Env.supabaseUrl}/auth/v1/token?grant_type=password'),
@@ -77,9 +99,18 @@ class SupabaseService {
             
             if (response.statusCode == 200) {
               // Manually refresh the auth state
+              _loggingService.info(
+                'HTTP fallback authentication successful, refreshing session',
+                category: LogCategory.auth,
+              );
               return await client.auth.refreshSession();
             } else {
-              throw 'Authentication failed: ${response.body}';
+              final errorMessage = 'Authentication failed: ${response.body}';
+              _loggingService.error(
+                errorMessage,
+                category: LogCategory.auth,
+              );
+              throw errorMessage;
             }
           } else {
             rethrow;
@@ -87,12 +118,22 @@ class SupabaseService {
         }
       } else {
         // Regular flow for non-macOS platforms
-        return await client.auth.signInWithPassword(
-          email: email,
-          password: password,
+        return await _errorHandler.executeWithRetry(
+          operationName: 'signInWithPassword',
+          operation: () => client.auth.signInWithPassword(
+            email: email,
+            password: password,
+          ),
         );
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _loggingService.error(
+        'Sign in failed',
+        category: LogCategory.auth,
+        error: e,
+        stackTrace: stackTrace,
+        additionalData: {'email': email},
+      );
       rethrow;
     }
   }
