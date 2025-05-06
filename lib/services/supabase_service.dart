@@ -3,14 +3,15 @@ import 'dart:io' show HttpClient, Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../config/env.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart' show visibleForTesting;
 
 /// Service class to manage Supabase client instance 
 class SupabaseService {
   /// Get the Supabase client instance
-  static final SupabaseClient client = Supabase.instance.client;
+  static SupabaseClient client = Supabase.instance.client;
 
   /// Get current user session
-  static Session? get session => client.auth.currentSession;
+  static Session? get session => _testSession ?? client.auth.currentSession;
 
   /// Get current user
   static User? get currentUser => client.auth.currentUser;
@@ -18,10 +19,38 @@ class SupabaseService {
   /// Check if user is authenticated
   static bool get isAuthenticated => currentUser != null;
   
+  /// Test-only variables
+  static Session? _testSession;
+  
   /// For debugging - contains Supabase connection status
   static String platformInfo = kIsWeb 
       ? 'Running on Web'
       : '${Platform.operatingSystem} ${Platform.operatingSystemVersion}';
+      
+  /// Test-only method to override the client for unit testing
+  @visibleForTesting
+  static void testSetClient(SupabaseClient mockClient) {
+    client = mockClient;
+  }
+  
+  /// Test-only method to reset the client to the default
+  @visibleForTesting
+  static void resetClient() {
+    client = Supabase.instance.client;
+    _testSession = null;
+  }
+  
+  /// Test-only method to clear test-specific values without accessing Supabase.instance
+  @visibleForTesting
+  static void clearTestValues() {
+    _testSession = null;
+  }
+  
+  /// Test-only method to set a test session
+  @visibleForTesting
+  static void setTestSession(Session mockSession) {
+    _testSession = mockSession;
+  }
       
   /// Authenticates a user with email and password
   static Future<AuthResponse> signInWithEmail(String email, String password) async {

@@ -224,6 +224,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ],
                 
                 TextFormField(
+                  key: const Key('email_field'),
                   controller: _emailController,
                   decoration: const InputDecoration(
                     labelText: 'Email',
@@ -242,6 +243,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
+                  key: const Key('password_field'),
                   controller: _passwordController,
                   decoration: const InputDecoration(
                     labelText: 'Password',

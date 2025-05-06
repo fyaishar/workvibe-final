@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../services/supabase_service.dart';
+import 'package:flutter/foundation.dart';
 
 /// Authentication state model
 class AuthState {
@@ -103,6 +104,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } else {
       state = state.setUnauthenticated();
     }
+  }
+  
+  /// Initialize auth state (public method for testing)
+  @visibleForTesting
+  Future<void> initializeAuthState() async {
+    await _initializeAuthState();
   }
 
   /// Sign in with email and password
