@@ -8,7 +8,7 @@ Product Requirements Document: Work Vibe v1.0 (Enhanced)
 1.4. Version: 1.0
 1.5. Date: 2025-04-30
 1.6. Author: Gemini (Generated based on user transcript, enhanced with structural elements)
-2. Goals
+2. Goals 
 
 Provide a simple mechanism for users to declare and update their current task and optional context (project/goal).
 Create a shared, real-time view of active users and their declared tasks.
