@@ -32,7 +32,7 @@ mixin _$SessionInfo {
 
   /// Current status of the user
   @JsonKey(
-    unknownEnumValue: UserStatus.offline,
+    unknownEnumValue: UserStatus.idle,
     toJson: userStatusToJson,
     fromJson: UserStatus.fromJson,
   )
@@ -69,7 +69,7 @@ abstract class $SessionInfoCopyWith<$Res> {
     String username,
     String avatarUrl,
     @JsonKey(
-      unknownEnumValue: UserStatus.offline,
+      unknownEnumValue: UserStatus.idle,
       toJson: userStatusToJson,
       fromJson: UserStatus.fromJson,
     )
@@ -160,7 +160,7 @@ abstract class _$$SessionInfoImplCopyWith<$Res>
     String username,
     String avatarUrl,
     @JsonKey(
-      unknownEnumValue: UserStatus.offline,
+      unknownEnumValue: UserStatus.idle,
       toJson: userStatusToJson,
       fromJson: UserStatus.fromJson,
     )
@@ -243,7 +243,7 @@ class _$SessionInfoImpl implements _SessionInfo {
     required this.username,
     required this.avatarUrl,
     @JsonKey(
-      unknownEnumValue: UserStatus.offline,
+      unknownEnumValue: UserStatus.idle,
       toJson: userStatusToJson,
       fromJson: UserStatus.fromJson,
     )
@@ -271,7 +271,7 @@ class _$SessionInfoImpl implements _SessionInfo {
   /// Current status of the user
   @override
   @JsonKey(
-    unknownEnumValue: UserStatus.offline,
+    unknownEnumValue: UserStatus.idle,
     toJson: userStatusToJson,
     fromJson: UserStatus.fromJson,
   )
@@ -347,7 +347,7 @@ abstract class _SessionInfo implements SessionInfo {
     required final String username,
     required final String avatarUrl,
     @JsonKey(
-      unknownEnumValue: UserStatus.offline,
+      unknownEnumValue: UserStatus.idle,
       toJson: userStatusToJson,
       fromJson: UserStatus.fromJson,
     )
@@ -375,7 +375,7 @@ abstract class _SessionInfo implements SessionInfo {
   /// Current status of the user
   @override
   @JsonKey(
-    unknownEnumValue: UserStatus.offline,
+    unknownEnumValue: UserStatus.idle,
     toJson: userStatusToJson,
     fromJson: UserStatus.fromJson,
   )

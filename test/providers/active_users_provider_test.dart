@@ -51,7 +51,7 @@ void main() {
 
     test('upsertUser should update existing user', () {
       final user = createUser(id: '1', username: 'Alice');
-      final updatedUser = user.copyWith(status: UserStatus.focusing);
+      final updatedUser = user.copyWith(status: UserStatus.paused);
 
       final notifier = container.read(activeUsersNotifierProvider.notifier);
       notifier.upsertUser(user);
@@ -59,7 +59,7 @@ void main() {
 
       final users = container.read(activeUsersProvider);
       expect(users.length, 1);
-      expect(users.first.status, UserStatus.focusing);
+      expect(users.first.status, UserStatus.paused);
     });
 
     test('removeUser should remove user by ID', () {
@@ -82,38 +82,27 @@ void main() {
       notifier.upsertUser(user);
 
       final beforeUpdate = DateTime.now();
-      notifier.updateUserStatus('1', UserStatus.focusing, statusMessage: 'Focus time');
+      notifier.updateUserStatus('1', UserStatus.paused, statusMessage: 'Taking a break');
 
       final updatedUser = container.read(activeUsersProvider).first;
-      expect(updatedUser.status, UserStatus.focusing);
-      expect(updatedUser.statusMessage, 'Focus time');
+      expect(updatedUser.status, UserStatus.paused);
+      expect(updatedUser.statusMessage, 'Taking a break');
       expect(updatedUser.lastUpdated.isAfter(beforeUpdate), isTrue);
       expect(updatedUser.username, user.username); // Other fields unchanged
     });
 
-    test('filtered providers should return correct users', () {
+    test('online users provider should return active users', () {
       final activeUser = createUser(id: '1', username: 'Alice', status: UserStatus.active);
-      final focusingUser = createUser(id: '2', username: 'Bob', status: UserStatus.focusing);
-      final awayUser = createUser(id: '3', username: 'Charlie', status: UserStatus.away);
-      final meetingUser = createUser(id: '4', username: 'David', status: UserStatus.inMeeting);
+      final pausedUser = createUser(id: '2', username: 'Bob', status: UserStatus.paused);
+      final idleUser = createUser(id: '3', username: 'Charlie', status: UserStatus.idle);
 
       final notifier = container.read(activeUsersNotifierProvider.notifier);
       notifier.upsertUser(activeUser);
-      notifier.upsertUser(focusingUser);
-      notifier.upsertUser(awayUser);
-      notifier.upsertUser(meetingUser);
+      notifier.upsertUser(pausedUser);
+      notifier.upsertUser(idleUser);
 
       expect(container.read(onlineUsersProvider).length, 1);
       expect(container.read(onlineUsersProvider).first.id, '1');
-
-      expect(container.read(focusingUsersProvider).length, 1);
-      expect(container.read(focusingUsersProvider).first.id, '2');
-
-      expect(container.read(awayUsersProvider).length, 1);
-      expect(container.read(awayUsersProvider).first.id, '3');
-
-      expect(container.read(inMeetingUsersProvider).length, 1);
-      expect(container.read(inMeetingUsersProvider).first.id, '4');
     });
 
     test('clearUsers should remove all users', () {
@@ -130,17 +119,17 @@ void main() {
 
     test('getUsersByStatus should return filtered users', () {
       final activeUser = createUser(id: '1', username: 'Alice', status: UserStatus.active);
-      final focusingUser1 = createUser(id: '2', username: 'Bob', status: UserStatus.focusing);
-      final focusingUser2 = createUser(id: '3', username: 'Charlie', status: UserStatus.focusing);
+      final pausedUser1 = createUser(id: '2', username: 'Bob', status: UserStatus.paused);
+      final pausedUser2 = createUser(id: '3', username: 'Charlie', status: UserStatus.paused);
 
       final notifier = container.read(activeUsersNotifierProvider.notifier);
       notifier.upsertUser(activeUser);
-      notifier.upsertUser(focusingUser1);
-      notifier.upsertUser(focusingUser2);
+      notifier.upsertUser(pausedUser1);
+      notifier.upsertUser(pausedUser2);
 
-      final focusingUsers = notifier.getUsersByStatus(UserStatus.focusing);
-      expect(focusingUsers.length, 2);
-      expect(focusingUsers.every((u) => u.status == UserStatus.focusing), isTrue);
+      final pausedUsers = notifier.getUsersByStatus(UserStatus.paused);
+      expect(pausedUsers.length, 2);
+      expect(pausedUsers.every((u) => u.status == UserStatus.paused), isTrue);
     });
   });
 } 

@@ -7,21 +7,13 @@ enum UserStatus {
   @JsonValue('active')
   active,
 
-  /// User is temporarily away
-  @JsonValue('away')
-  away,
+  /// User is temporarily paused/away
+  @JsonValue('paused')
+  paused,
 
-  /// User is in a focus session
-  @JsonValue('focusing')
-  focusing,
-
-  /// User is in a meeting
-  @JsonValue('inMeeting')
-  inMeeting,
-
-  /// User is offline
-  @JsonValue('offline')
-  offline;
+  /// User is idle/inactive
+  @JsonValue('idle')
+  idle;
 
   /// Convert the enum to a string representation
   String toJson() => _$UserStatusEnumMap[this]!;
@@ -30,17 +22,15 @@ enum UserStatus {
   static UserStatus fromJson(String json) =>
       _$UserStatusEnumMap.entries.firstWhere(
         (entry) => entry.value == json,
-        orElse: () => const MapEntry(UserStatus.offline, 'offline'),
+        orElse: () => const MapEntry(UserStatus.idle, 'idle'),
       ).key;
 }
 
 /// Generated enum map for UserStatus
 const _$UserStatusEnumMap = {
   UserStatus.active: 'active',
-  UserStatus.away: 'away',
-  UserStatus.focusing: 'focusing',
-  UserStatus.inMeeting: 'inMeeting',
-  UserStatus.offline: 'offline',
+  UserStatus.paused: 'paused',
+  UserStatus.idle: 'idle',
 };
 
 /// Top-level function for enum serialization (for use in @JsonKey)

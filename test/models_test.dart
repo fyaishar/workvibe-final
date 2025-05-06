@@ -9,7 +9,7 @@ void main() {
     test('UserStatus serialization', () {
       expect(UserStatus.active.toJson(), 'active');
       expect(UserStatus.fromJson('active'), UserStatus.active);
-      expect(UserStatus.fromJson('invalid'), UserStatus.offline);
+      expect(UserStatus.fromJson('invalid'), UserStatus.idle);
     });
 
     test('SessionInfo serialization', () {

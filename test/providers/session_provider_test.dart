@@ -55,15 +55,15 @@ void main() {
 
       // Update status
       container.read(sessionNotifierProvider.notifier).updateStatus(
-        UserStatus.focusing,
-        statusMessage: 'Deep work time',
+        UserStatus.paused,
+        statusMessage: 'Taking a break',
       );
 
       final updatedState = container.read(sessionNotifierProvider);
       expect(updatedState?.id, equals('123'));
       expect(updatedState?.username, equals('testUser'));
-      expect(updatedState?.status, equals(UserStatus.focusing));
-      expect(updatedState?.statusMessage, equals('Deep work time'));
+      expect(updatedState?.status, equals(UserStatus.paused));
+      expect(updatedState?.statusMessage, equals('Taking a break'));
       expect(updatedState?.lastUpdated.isAfter(now), isTrue);
     });
 
@@ -88,7 +88,7 @@ void main() {
 
     test('updateStatus should do nothing when session is null', () {
       container.read(sessionNotifierProvider.notifier).updateStatus(
-        UserStatus.focusing,
+        UserStatus.paused,
         statusMessage: 'Should not be set',
       );
 

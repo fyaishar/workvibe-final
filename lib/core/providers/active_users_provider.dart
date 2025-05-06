@@ -63,26 +63,18 @@ List<SessionInfo> onlineUsers(OnlineUsersRef ref) {
     .toList();
 }
 
-/// Provider for users in focus mode
+/// Provider for users who are paused
 @riverpod
-List<SessionInfo> focusingUsers(FocusingUsersRef ref) {
+List<SessionInfo> pausedUsers(AutoDisposeProviderRef<List<SessionInfo>> ref) {
   return ref.watch(activeUsersNotifierProvider)
-    .where((user) => user.status == UserStatus.focusing)
+    .where((user) => user.status == UserStatus.paused)
     .toList();
 }
 
-/// Provider for users in meetings
+/// Provider for idle users
 @riverpod
-List<SessionInfo> inMeetingUsers(InMeetingUsersRef ref) {
+List<SessionInfo> idleUsers(AutoDisposeProviderRef<List<SessionInfo>> ref) {
   return ref.watch(activeUsersNotifierProvider)
-    .where((user) => user.status == UserStatus.inMeeting)
-    .toList();
-}
-
-/// Provider for away users
-@riverpod
-List<SessionInfo> awayUsers(AwayUsersRef ref) {
-  return ref.watch(activeUsersNotifierProvider)
-    .where((user) => user.status == UserStatus.away)
+    .where((user) => user.status == UserStatus.idle)
     .toList();
 } 

@@ -19,7 +19,7 @@ class SessionInfo with _$SessionInfo {
     
     /// Current status of the user
     @JsonKey(
-      unknownEnumValue: UserStatus.offline,
+      unknownEnumValue: UserStatus.idle,
       toJson: userStatusToJson,
       fromJson: UserStatus.fromJson,
     )

@@ -42,64 +42,42 @@ final onlineUsersProvider = AutoDisposeProvider<List<SessionInfo>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef OnlineUsersRef = AutoDisposeProviderRef<List<SessionInfo>>;
-String _$focusingUsersHash() => r'774b0d2bae5ee3a5e574e06e39edb024f49ce0c8';
+String _$pausedUsersHash() => r'c37665c2807e6ca40ba04556c0fb927fcbecfb73';
 
-/// Provider for users in focus mode
+/// Provider for users who are paused
 ///
-/// Copied from [focusingUsers].
-@ProviderFor(focusingUsers)
-final focusingUsersProvider = AutoDisposeProvider<List<SessionInfo>>.internal(
-  focusingUsers,
-  name: r'focusingUsersProvider',
+/// Copied from [pausedUsers].
+@ProviderFor(pausedUsers)
+final pausedUsersProvider = AutoDisposeProvider<List<SessionInfo>>.internal(
+  pausedUsers,
+  name: r'pausedUsersProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$focusingUsersHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$pausedUsersHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef FocusingUsersRef = AutoDisposeProviderRef<List<SessionInfo>>;
-String _$inMeetingUsersHash() => r'47e256b87619600dc6e6f38d397ccca6ac6e2d94';
+typedef PausedUsersRef = AutoDisposeProviderRef<List<SessionInfo>>;
+String _$idleUsersHash() => r'6e46dc666affabb9134c7dc88038da175eef2384';
 
-/// Provider for users in meetings
+/// Provider for idle users
 ///
-/// Copied from [inMeetingUsers].
-@ProviderFor(inMeetingUsers)
-final inMeetingUsersProvider = AutoDisposeProvider<List<SessionInfo>>.internal(
-  inMeetingUsers,
-  name: r'inMeetingUsersProvider',
+/// Copied from [idleUsers].
+@ProviderFor(idleUsers)
+final idleUsersProvider = AutoDisposeProvider<List<SessionInfo>>.internal(
+  idleUsers,
+  name: r'idleUsersProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$inMeetingUsersHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$idleUsersHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef InMeetingUsersRef = AutoDisposeProviderRef<List<SessionInfo>>;
-String _$awayUsersHash() => r'14c101c4f2b6b70f1b1516ba553ec776b4a887c0';
-
-/// Provider for away users
-///
-/// Copied from [awayUsers].
-@ProviderFor(awayUsers)
-final awayUsersProvider = AutoDisposeProvider<List<SessionInfo>>.internal(
-  awayUsers,
-  name: r'awayUsersProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$awayUsersHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef AwayUsersRef = AutoDisposeProviderRef<List<SessionInfo>>;
+typedef IdleUsersRef = AutoDisposeProviderRef<List<SessionInfo>>;
 String _$activeUsersNotifierHash() =>
     r'a89d531b40bcc297bdcbb3da5f8d2066d5847b12';
 

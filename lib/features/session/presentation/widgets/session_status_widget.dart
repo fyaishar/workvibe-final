@@ -58,7 +58,7 @@ class SessionStatusWidget extends ConsumerWidget {
                   label: Text(status.name),
                 );
               }).toList(),
-              selected: {currentStatus ?? UserStatus.offline},
+              selected: {currentStatus ?? UserStatus.idle},
               onSelectionChanged: (Set<UserStatus> selection) {
                 final newStatus = selection.first;
                 ref.read(sessionNotifierProvider.notifier).updateStatus(
