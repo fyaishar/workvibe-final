@@ -2,6 +2,8 @@
 
 This directory contains the implementation of Workvibe's real-time communication layer.
 
+> **Note:** For comprehensive documentation about Supabase as the official database technology for Workvibe, please see the [Database Technology Documentation](../../docs/database_technology.md).
+
 ## Migration from Socket.IO to Supabase Realtime
 
 The original implementation used a Node.js backend with Socket.IO for real-time communication. We've migrated this to use Supabase Realtime, eliminating the need for a custom backend server while preserving the same functionality.

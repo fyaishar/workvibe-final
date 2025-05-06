@@ -7,6 +7,8 @@ A Flutter-based productivity application using Supabase for backend services.
 - `lib/` - Flutter application source code
 - `test/` - Test files for the application
 - `old_backend/` - Legacy Node.js backend code (for reference only)
+- `docs/` - Project documentation
+  - [Database Technology](docs/database_technology.md) - Official documentation on Supabase usage
 
 ## About the old_backend Directory
 
