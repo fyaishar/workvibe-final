@@ -5,20 +5,20 @@ import 'colors.dart';
 /// Text styles for different UI elements with state variations.
 class TextStyles {
   // User names
-  static const TextStyle username = TextStyle(
+  static TextStyle get username => TextStyle(
     fontFamily: 'Eina01',
     fontWeight: FontWeight.w600,
     fontSize: 14,
     height: 1.3,
-    color: AppColors.primaryText,
+    color: UsernameColors.currentColor,
   );
 
-  static const TextStyle usernamePersonal = TextStyle(
+  static TextStyle get usernamePersonal => TextStyle(
     fontFamily: 'Eina01',
     fontWeight: FontWeight.w600,
     fontSize: 16,
     height: 1.3,
-    color: AppColors.active, // Was accentActive, replaced with active
+    color: UsernameColors.currentColor,
   );
   
   static const TextStyle usernameBreak = TextStyle(
@@ -93,7 +93,6 @@ class TextStyles {
     fontSize: 12,
     height: 1.3,
     color: AppColors.breakText,
-    fontStyle: FontStyle.italic,
   );
   
   static const TextStyle projectIdle = TextStyle(
@@ -102,7 +101,6 @@ class TextStyles {
     fontSize: 12,
     height: 1.3,
     color: AppColors.idleText,
-    fontStyle: FontStyle.italic,
   );
 
   // Status labels

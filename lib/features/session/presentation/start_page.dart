@@ -1,8 +1,11 @@
 // lib/features/session/presentation/start_page.dart
 import 'package:flutter/material.dart';
 import '../../../app/theme/colors.dart';
-import '../../../app/theme/text_styles.dart';
 import '../../../app/theme/spacing.dart';
+import '../../../app/theme/text_styles.dart';
+import '../../../shared/widgets/input/custom_text_field.dart';
+import '../../../shared/widgets/session_card/session_card.dart';
+import '../../../shared/widgets/status/status_indicator.dart';
 
 /// A page showcasing all themed styles: text, inputs, buttons, and session cards.
 class StartPage extends StatelessWidget {
@@ -13,23 +16,26 @@ class StartPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.appBackground,
       appBar: AppBar(
-        title: const Text('Style Showcase', style: TextStyles.username),
+        title: Text('Style Showcase', style: TextStyles.username),
         backgroundColor: AppColors.sessionCardBackground,
         elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(Spacing.cardPadding),
-        child: ListView(
-          children: [
-            const SectionHeader(title: 'Text Styles'),
-            const StyledTextExamples(),
-            const SizedBox(height: Spacing.cardMarginVertical * 2),
-            const SectionHeader(title: 'Inputs & Buttons'),
-            const StyledControls(),
-            const SizedBox(height: Spacing.cardMarginVertical * 2),
-            const SectionHeader(title: 'Session Cards'),
-            const StyledSessionCards(),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(Spacing.cardPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionHeader(title: 'Text Styles'),
+              StyledTextExamples(),
+              const SizedBox(height: Spacing.cardMarginVertical * 2),
+              const SectionHeader(title: 'Inputs & Buttons'),
+              const StyledControls(),
+              const SizedBox(height: Spacing.cardMarginVertical * 2),
+              const SectionHeader(title: 'Session Cards'),
+              const StyledSessionCards(),
+            ],
+          ),
         ),
       ),
     );
@@ -50,23 +56,28 @@ class SectionHeader extends StatelessWidget {
 }
 
 class StyledTextExamples extends StatelessWidget {
-  const StyledTextExamples({super.key});
+  StyledTextExamples({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+      children: [
         Text('Username', style: TextStyles.username),
         Text('Username (Personal)', style: TextStyles.usernamePersonal),
-        SizedBox(height: 8),
-        Text('Task', style: TextStyles.task),
-        Text('Task (Personal)', style: TextStyles.taskPersonal),
-        SizedBox(height: 8),
-        Text('Project', style: TextStyles.project),
-        Text('Project (Personal)', style: TextStyles.projectPersonal),
-        SizedBox(height: 8),
-        Text('Break Label', style: TextStyles.breakLabel),
+        const SizedBox(height: 8),
+        const Text('Username (Break)', style: TextStyles.usernameBreak),
+        const Text('Username (Idle)', style: TextStyles.usernameIdle),
+        const SizedBox(height: 16),
+        const Text('Task Text', style: TextStyles.task),
+        const Text('Task Text (Personal)', style: TextStyles.taskPersonal),
+        const Text('Task Text (Break)', style: TextStyles.taskBreak),
+        const Text('Task Text (Idle)', style: TextStyles.taskIdle),
+        const SizedBox(height: 16),
+        const Text('Project Text', style: TextStyles.project),
+        const Text('Project Text (Personal)', style: TextStyles.projectPersonal),
+        const Text('Project Text (Break)', style: TextStyles.projectBreak),
+        const Text('Project Text (Idle)', style: TextStyles.projectIdle),
       ],
     );
   }

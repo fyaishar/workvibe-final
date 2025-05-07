@@ -7,6 +7,8 @@ import '../input/custom_text_field.dart';
 import '../status/status_indicator.dart';
 import '../feedback/notification_toast.dart';
 import '../feedback/connection_status.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../settings/username_color_picker.dart';
 
 /// A showcase screen for testing and demonstrating UI components.
 /// This screen will progressively display components as they are implemented.
@@ -15,47 +17,42 @@ class ComponentShowcase extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('UI Component Showcase'),
-        backgroundColor: Colors.black,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSectionTitle('Theme Colors'),
-            _buildThemeColorsSection(),
-            
-            _buildSectionTitle('Typography'),
-            _buildTypographySection(),
-            
-            _buildSectionTitle('Session Cards'),
-            _buildSessionCardsSection(),
-            
-            _buildSectionTitle('Input Fields'),
-            _buildInputFieldsSection(),
-            
-            _buildSectionTitle('Status Indicators'),
-            _buildStatusIndicatorsSection(),
-            
-            _buildSectionTitle('Feedback Components'),
-            _buildFeedbackComponentsSection(),
-          ],
-        ),
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildSectionTitle('Theme Colors'),
+          _buildThemeColorsSection(),
+          
+          _buildSectionTitle('Typography'),
+          _buildTypographySection(),
+          
+          _buildSectionTitle('Session Cards'),
+          _buildSessionCardsSection(),
+          
+          _buildSectionTitle('Input Fields'),
+          _buildInputFieldsSection(),
+          
+          _buildSectionTitle('Status Indicators'),
+          _buildStatusIndicatorsSection(),
+          
+          _buildSectionTitle('Feedback Components'),
+          _buildFeedbackComponentsSection(),
+        ],
       ),
     );
   }
   
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.only(top: 24.0, bottom: 8.0),
+      padding: const EdgeInsets.only(bottom: 12.0, top: 24.0),
       child: Text(
         title,
         style: const TextStyle(
-          fontSize: 20,
           fontWeight: FontWeight.bold,
+          fontSize: 18,
         ),
       ),
     );

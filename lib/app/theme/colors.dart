@@ -46,3 +46,38 @@ class AppColors {
   static const Color inputFocusBorder = Color(0xFFE53935);
   static const Color placeholder = Color(0xFF777777);
 }
+
+/// Username color options for customization
+class UsernameColors {
+  // Default white color (same as primaryText)
+  static const Color white = Color(0xFFE9EDF2);
+  
+  // Additional color options
+  static const Color blue = Color(0xFF3E95FF);
+  static const Color green = Color(0xFF26D07C);
+  static const Color purple = Color(0xFFB264F8);
+  static const Color orange = Color(0xFFFF8C38);
+  static const Color yellow = Color(0xFFFFD02F);
+  static const Color pink = Color(0xFFFF6B9E);
+  
+  // Current selected color (default is white)
+  static Color currentColor = white;
+  
+  // Get all available colors as a map
+  static Map<String, Color> getAllColors() {
+    return {
+      'white': white,
+      'blue': blue,
+      'green': green, 
+      'purple': purple,
+      'orange': orange,
+      'yellow': yellow,
+      'pink': pink,
+    };
+  }
+  
+  // Set the current color
+  static void setColor(Color color) {
+    currentColor = color;
+  }
+}
