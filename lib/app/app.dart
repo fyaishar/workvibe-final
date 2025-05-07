@@ -20,10 +20,14 @@ class MyApp extends ConsumerWidget {
       theme: AppTheme.light,
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
-      // Show login screen if not authenticated, otherwise show start page
+      // Temporarily show ComponentShowcase directly for UI development
+      home: const ShowcaseScreen(),
+      // Comment out the conditional logic for now
+      /*
       home: authState.isAuthenticated 
           ? const StartPage() 
           : const LoginScreen(),
+      */
       routes: {
         '/showcase': (context) => const ShowcaseScreen(),
       },

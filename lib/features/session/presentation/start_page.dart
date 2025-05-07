@@ -171,7 +171,7 @@ class SessionCardExample extends StatelessWidget {
       decoration: BoxDecoration(
         color: containerColor,
         border: Border.all(
-          color: isPersonal ? AppColors.accentActive : AppColors.sessionCardBorder,
+          color: isPersonal ? AppColors.active : AppColors.sessionCardBorder,
           width: getBorderWidth(),
         ),
         borderRadius: BorderRadius.circular(Spacing.borderRadius),
