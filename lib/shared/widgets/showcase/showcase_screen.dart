@@ -14,8 +14,10 @@ class ShowcaseScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.appBackground,
       appBar: AppBar(
         title: const Text('UI Component Showcase'),
+        backgroundColor: AppColors.moduleBackground,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -23,18 +25,24 @@ class ShowcaseScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Username Color Picker
+            // Session Status Showcase - FEATURED AT THE TOP
+            _buildSectionTitle('Pre-Start Session', fontSize: 24),
+            const _PreStartSession(),
+            const SizedBox(height: 32),
+            
+            _buildSectionTitle('Active Session', fontSize: 24),
+            const _ActiveSession(),
+            const SizedBox(height: 32),
+            
+            const Divider(color: Colors.white30, thickness: 1),
+            const SizedBox(height: 32),
+            
+            // Other components below
             _buildSectionTitle('Username Color Picker'),
             const UsernameColorPicker(),
             
-            // Username Preview
             _buildSectionTitle('Username Preview'),
             const _UsernamePreview(),
-            const SizedBox(height: 24),
-            
-            // Start Screen Personal Session Card
-            _buildSectionTitle('Start Screen Personal Session'),
-            const _StartScreenPersonalSession(),
             const SizedBox(height: 24),
             
             // Core Component Showcase
@@ -46,13 +54,13 @@ class ShowcaseScreen extends StatelessWidget {
     );
   }
   
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, {double fontSize = 18}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0, top: 8.0),
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 18,
+        style: TextStyle(
+          fontSize: fontSize,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -92,70 +100,203 @@ class _UsernamePreview extends ConsumerWidget {
   }
 }
 
-class _StartScreenPersonalSession extends ConsumerWidget {
-  const _StartScreenPersonalSession({Key? key}) : super(key: key);
+// Helper class to ensure both states have exactly the same height
+class _SessionContainer extends StatelessWidget {
+  final Widget child;
   
-  double getBorderWidth(int elapsedMinutes) {
-    if (elapsedMinutes >= 300) return 7;
-    if (elapsedMinutes >= 240) return 6;
-    if (elapsedMinutes >= 180) return 5;
-    if (elapsedMinutes >= 120) return 4;
-    if (elapsedMinutes >= 60) return 3;
-    if (elapsedMinutes >= 30) return 2;
-    if (elapsedMinutes >= 15) return 1.5;
-    return 1;
+  const _SessionContainer({Key? key, required this.child}) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 120, // Reduced height from 160 to 120
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: AppColors.moduleBackground,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: const EdgeInsets.all(16.0),
+        child: child,
+      ),
+    );
   }
+}
+
+class _PreStartSession extends StatelessWidget {
+  const _PreStartSession({Key? key}) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    return _SessionContainer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Username in top left with row to match active session's layout
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'fadisaleh',
+                style: TextStyles.usernamePersonal,
+              ),
+              // Empty space to match active session
+              const SizedBox(width: 24),
+            ],
+          ),
+          // Reduce vertical spacing
+          const SizedBox(height: 12),
+          // What do you want to do? - same as task in active session
+          Container(
+            height: 20, // Reduced from 24 to 20
+            child: TextField(
+              enabled: false,
+              decoration: InputDecoration(
+                hintText: 'What do you want to do?',
+                hintStyle: TextStyle(color: AppColors.secondaryText),
+                border: InputBorder.none,
+                filled: true,
+                fillColor: AppColors.moduleBackground,
+                contentPadding: EdgeInsets.zero,
+                isDense: true, // Reduce internal padding
+              ),
+              style: TextStyles.taskPersonal,
+            ),
+          ),
+          const SizedBox(height: 2), // Reduced from 4 to 2
+          // What is this for? and Start button - format exactly like project+time row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // TextField styled like the project text
+              Expanded(
+                child: Container(
+                  height: 20, // Reduced from 24 to 20
+                  child: TextField(
+                    enabled: false,
+                    decoration: InputDecoration(
+                      hintText: 'What is this for?',
+                      hintStyle: TextStyle(color: AppColors.secondaryText),
+                      border: InputBorder.none,
+                      filled: true,
+                      fillColor: AppColors.moduleBackground,
+                      contentPadding: EdgeInsets.zero,
+                      isDense: true, // Reduce internal padding
+                    ),
+                    style: TextStyles.projectPersonal,
+                  ),
+                ),
+              ),
+              // Button in place of time indicator
+              SizedBox(
+                height: 24, // Reduced from 28 to 24
+                child: ElevatedButton(
+                  onPressed: null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.active,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                  ),
+                  child: const Text('Start'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ActiveSession extends ConsumerWidget {
+  const _ActiveSession({Key? key}) : super(key: key);
   
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Watch for color changes
     ref.watch(usernameColorProvider);
     
-    const elapsedMinutes = 125; // Example: 2 hours 5 minutes
-    const isPersonal = true;
-    
-    final bgColor = isPersonal
-        ? AppColors.personalSessionCardBackground
-        : AppColors.sessionCardBackground;
-    final containerColor = isPersonal
-        ? AppColors.personalSessionContainer
-        : bgColor;
-    
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: containerColor,
-        border: Border.all(
-          color: AppColors.active,
-          width: getBorderWidth(elapsedMinutes),
-        ),
-        borderRadius: BorderRadius.circular(Spacing.borderRadius),
-      ),
-      padding: const EdgeInsets.all(Spacing.cardPadding),
+    return _SessionContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min, // Use min size instead of letting it expand
         children: [
-          Text('You', style: TextStyles.usernamePersonal),
-          const SizedBox(height: 4),
-          const Text('Building UI components in Flutter', style: TextStyles.taskPersonal),
-          const SizedBox(height: 2),
-          const Text('WorkVibe Project', style: TextStyles.projectPersonal),
-          const SizedBox(height: 8),
+          // Username with indicator
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('2h 5m', style: TextStyles.timeIndicator),
-              OutlinedButton(
-                onPressed: () {},
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.primaryText,
-                  side: const BorderSide(color: AppColors.active),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                ),
-                child: const Text('TAKE A BREAK'),
+              Row(
+                children: [
+                  Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: AppColors.active,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'fadisaleh',
+                    style: TextStyles.usernamePersonal,
+                  ),
+                ],
+              ),
+              IconButton(
+                icon: const Icon(Icons.pause, color: Colors.white),
+                onPressed: null,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
               ),
             ],
           ),
+          // Precise spacing to match pre-start (16px)
+          const SizedBox(height: 16),
+          // Task with progress dots
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'Build Workvibe mockup',
+                style: TextStyles.taskPersonal,
+              ),
+              const SizedBox(width: 8),
+              Row(
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: AppColors.active,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          // Project name with time indicator on same line
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const [
+              Text(
+                'Workvibe beta',
+                style: TextStyles.projectPersonal,
+              ),
+              Text('45m ago', style: TextStyles.timeIndicator),
+            ],
+          ),
+          // Remove spacer - no extra space needed
         ],
       ),
     );

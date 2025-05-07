@@ -15,21 +15,19 @@ class MyApp extends ConsumerWidget {
     // Listen to auth state changes
     final authState = ref.watch(authProvider);
     
+    // Force dark theme for showcase
     return MaterialApp(
-      title: 'Workvibe',
-      theme: AppTheme.light,
+      title: 'Workvibe UI Showcase',
+      theme: AppTheme.dark,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
-      // Temporarily show ComponentShowcase directly for UI development
+      // Directly show the showcase screen without any conditional logic
       home: const ShowcaseScreen(),
-      // Comment out the conditional logic for now
-      /*
-      home: authState.isAuthenticated 
-          ? const StartPage() 
-          : const LoginScreen(),
-      */
       routes: {
-        '/showcase': (context) => const ShowcaseScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/start': (context) => const StartPage(),
       },
     );
   }
