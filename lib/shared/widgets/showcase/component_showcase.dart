@@ -9,6 +9,7 @@ import '../feedback/notification_toast.dart';
 import '../feedback/connection_status.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../settings/username_color_picker.dart';
+import 'showcase_screen.dart'; // Import to access EnhancedActiveSession
 
 /// A showcase screen for testing and demonstrating UI components.
 /// This screen will progressively display components as they are implemented.
@@ -223,20 +224,8 @@ class ComponentShowcase extends StatelessWidget {
         const SizedBox(height: Spacing.medium),
         const Text('Personal Session', style: TextStyle(color: Colors.grey)),
         
-        // Personal session (your own)
-        SessionCard(
-          username: 'You',
-          task: 'Creating UI components for WorkVibe',
-          projectOrGoal: 'WorkVibe Frontend',
-          status: SessionStatus.active,
-          durationLevel: 4, // 45 minutes
-          isPersonal: true,
-          timeIndicator: 'Started 45m ago',
-          onTap: () {
-            // In a real app, this might open editing controls
-            debugPrint('Personal session card tapped');
-          },
-        ),
+        // Replace the direct SessionCard implementation with EnhancedActiveSession
+        const EnhancedActiveSession(),
       ],
     );
   }
