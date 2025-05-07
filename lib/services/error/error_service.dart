@@ -85,20 +85,18 @@ class ErrorService {
   
   /// Handles generic errors
   String _handleGenericError(Object error) {
-    final errorString = error.toString();
+    final errorString = error.toString().toLowerCase();
     
     if (errorString.contains('permission')) {
       return 'Permission error: The app does not have necessary permissions.';
-    } else if (errorString.contains('timeout')) {
-      return 'The operation timed out. Please try again later.';
-    } else {
-      // In debug mode, we return more detailed error information
-      if (kDebugMode) {
-        return 'Error: $errorString';
-      } else {
-        return 'An unexpected error occurred. Please try again later.';
-      }
     }
+    if (errorString.contains('timeout') || errorString.contains('timed out')) {
+      return 'The operation timed out. Please try again later.';
+    }
+    if (kDebugMode) {
+      return 'Error: ${error.toString()}';
+    }
+    return 'An unexpected error occurred. Please try again later.';
   }
   
   /// Log errors to console (will be replaced with proper logging)

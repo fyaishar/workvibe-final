@@ -22,6 +22,9 @@ enum LogCategory {
 /// A centralized service for structured logging throughout the application
 class LoggingService {
   static final LoggingService _instance = LoggingService._internal();
+  static void Function(Object?) _printFn = print;
+  static void set printFn(void Function(Object?) fn) => _printFn = fn;
+  static void Function(Object?) get printFn => _printFn;
   
   factory LoggingService() {
     return _instance;
@@ -52,9 +55,9 @@ class LoggingService {
     // In a production app, this would send logs to a backend service
     // For now, we just print them in debug mode
     if (kDebugMode) {
-      print('LOG: ${_formatLogEntry(logEntry)}');
-      if (stackTrace != null && level == LogLevel.error || level == LogLevel.fatal) {
-        print('STACK TRACE: $stackTrace');
+      _printFn('LOG: ${_formatLogEntry(logEntry)}');
+      if (stackTrace != null && (level == LogLevel.error || level == LogLevel.fatal)) {
+        _printFn('STACK TRACE: $stackTrace');
       }
     }
   }
