@@ -10,9 +10,13 @@ import 'core/config/riverpod_config.dart';
 import 'config/env.dart';
 import 'services/supabase_service.dart';
 import 'services/error/index.dart';
+import 'shared/widgets/showcase/showcase_screen.dart';
 
 // Global logging service instance for use in error handling
 final LoggingService _logger = LoggingService();
+
+// Add a global key for navigator access
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   // Set up global error handling
@@ -114,4 +118,53 @@ void main() async {
       stackTrace: stackTrace,
     );
   });
+}
+
+class WorkVibeApp extends StatelessWidget {
+  const WorkVibeApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Work Vibe',
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xFF1A1A1A), // Dark background from AppColors
+        brightness: Brightness.dark, // Ensure dark theme
+      ),
+      home: const HomeScreen(),
+      routes: {
+        '/showcase': (context) => const ShowcaseScreen(), // Add showcase route
+      },
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Work Vibe'),
+        backgroundColor: Colors.black,
+        actions: [
+          // Add a button to access the showcase
+          IconButton(
+            icon: const Icon(Icons.palette),
+            tooltip: 'UI Component Showcase',
+            onPressed: () {
+              Navigator.pushNamed(context, '/showcase');
+            },
+          ),
+        ],
+      ),
+      body: const Center(
+        child: Text(
+          'Work Vibe App',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  }
 } 

@@ -4,6 +4,8 @@ import 'theme/theme.dart';
 import '../features/session/presentation/start_page.dart';
 import '../features/auth/screens/login_screen.dart';
 import '../features/auth/state/auth_state.dart'; 
+import '../shared/widgets/showcase/showcase_screen.dart';
+import '../main.dart';
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
@@ -17,10 +19,14 @@ class MyApp extends ConsumerWidget {
       title: 'Workvibe',
       theme: AppTheme.light,
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       // Show login screen if not authenticated, otherwise show start page
       home: authState.isAuthenticated 
           ? const StartPage() 
           : const LoginScreen(),
+      routes: {
+        '/showcase': (context) => const ShowcaseScreen(),
+      },
     );
   }
 } 

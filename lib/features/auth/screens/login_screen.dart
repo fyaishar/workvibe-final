@@ -175,6 +175,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         title: const Text('WorkVibe Login'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.palette),
+            onPressed: () => Navigator.pushNamed(context, '/showcase'),
+            tooltip: 'UI Component Showcase',
+          ),
+          IconButton(
             icon: const Icon(Icons.network_check),
             onPressed: _testConnection,
             tooltip: 'Test Connection',
