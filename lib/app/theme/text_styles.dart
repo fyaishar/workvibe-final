@@ -129,6 +129,14 @@ class TextStyles {
     color: AppColors.primaryText,
   );
   
+  static const TextStyle inputLabel = TextStyle(
+    fontFamily: 'Eina01',
+    fontWeight: FontWeight.w500,
+    fontSize: 14,
+    height: 1.3,
+    color: AppColors.primaryText,
+  );
+  
   static const TextStyle placeholder = TextStyle(
     fontFamily: 'Eina01',
     fontWeight: FontWeight.w400,

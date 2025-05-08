@@ -13,6 +13,7 @@ class Spacing {
   static const double cardPadding = 16.0;
   static const double cardMarginVertical = 8.0;
   static const double borderRadius = 8.0;
+  static const double borderRadiusSmall = 4.0; // Smaller border radius for UI elements
   static const double borderWidth = 1.0;
   
   // Border thickness levels for session duration visualization (8 levels)

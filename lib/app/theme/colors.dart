@@ -42,6 +42,7 @@ class AppColors {
   
   // Input field colors
   static const Color inputBackground = Color(0xFF2A2A2A);
+  static const Color disabledBackground = Color(0xFF222222); // Background for disabled fields
   static const Color inputBorder = Color(0xFF3A3A3A);
   static const Color inputFocusBorder = Color(0xFFE53935);
   static const Color placeholder = Color(0xFF777777);

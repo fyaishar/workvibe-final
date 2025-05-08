@@ -4,9 +4,13 @@ import '../../../app/theme/text_styles.dart';
 import '../../../app/theme/spacing.dart';
 import '../session_card/session_card.dart';
 import '../input/custom_text_field.dart';
+import '../input/search_field.dart';
 import '../status/status_indicator.dart';
 import '../feedback/notification_toast.dart';
 import '../feedback/connection_status.dart';
+import '../feedback/loading_spinner.dart';
+import '../feedback/error_display.dart';
+import '../feedback/progress_indicator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../settings/username_color_picker.dart';
 import 'showcase_screen.dart'; // Import to access EnhancedActiveSession
@@ -231,66 +235,87 @@ class ComponentShowcase extends StatelessWidget {
   }
   
   Widget _buildInputFieldsSection() {
-    // Display different types of input fields
+    // Display different input field variations
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Basic text field
+        // Basic text field with placeholder
         const Text('Basic Input', style: TextStyle(color: Colors.grey)),
         const SizedBox(height: Spacing.small),
-        const CustomTextField(
-          placeholder: 'Enter your task description',
-          hint: 'What are you working on?',
+        CustomTextField(
+          placeholder: 'Enter your task here',
         ),
         
         const SizedBox(height: Spacing.medium),
         
-        // Field with error
+        // Labeled text field with required indicator
+        const Text('Labeled Input with Required Field', style: TextStyle(color: Colors.grey)),
+        const SizedBox(height: Spacing.small),
+        CustomTextField(
+          placeholder: 'Enter project name',
+          label: 'Project Name',
+          isRequired: true,
+        ),
+        
+        const SizedBox(height: Spacing.medium),
+        
+        // Text field with error
         const Text('Input with Error', style: TextStyle(color: Colors.grey)),
         const SizedBox(height: Spacing.small),
-        const CustomTextField(
-          placeholder: 'Enter project name',
-          errorText: 'Project name is required',
+        CustomTextField(
+          placeholder: 'Enter email address',
+          errorText: 'Please enter a valid email address',
         ),
         
         const SizedBox(height: Spacing.medium),
         
-        // Field with prefix/suffix icons
+        // Text field with hint
+        const Text('Input with Hint', style: TextStyle(color: Colors.grey)),
+        const SizedBox(height: Spacing.small),
+        CustomTextField(
+          placeholder: 'Add a description',
+          hint: 'Optional: Add details about your task',
+        ),
+        
+        const SizedBox(height: Spacing.medium),
+        
+        // Text field with clear button
+        const Text('Input with Clear Button', style: TextStyle(color: Colors.grey)),
+        const SizedBox(height: Spacing.small),
+        CustomTextField(
+          placeholder: 'Type something to see the clear button',
+          showClearButton: true,
+        ),
+        
+        const SizedBox(height: Spacing.medium),
+        
+        // Text field with icon
         const Text('Input with Icons', style: TextStyle(color: Colors.grey)),
         const SizedBox(height: Spacing.small),
         CustomTextField(
-          placeholder: 'Search for projects',
+          placeholder: 'Search for tasks',
           prefixIcon: Icons.search,
-          suffixIcon: Icons.clear,
-          onSuffixIconPressed: () {
-            // In a real app, this would clear the field
-            debugPrint('Clear search field');
-          },
+          suffixIcon: Icons.filter_list,
+          onSuffixIconPressed: () => debugPrint('Filter pressed'),
         ),
         
         const SizedBox(height: Spacing.medium),
         
-        // Password field
-        const Text('Password Input', style: TextStyle(color: Colors.grey)),
+        // Search field
+        const Text('Search Field', style: TextStyle(color: Colors.grey)),
         const SizedBox(height: Spacing.small),
-        CustomTextField(
-          placeholder: 'Enter password',
-          obscureText: true,
-          suffixIcon: Icons.visibility,
-          onSuffixIconPressed: () {
-            // In a real app, this would toggle password visibility
-            debugPrint('Toggle password visibility');
-          },
+        SearchField(
+          placeholder: 'Search for users or projects',
+          onSearch: (value) => debugPrint('Searching: $value'),
         ),
         
         const SizedBox(height: Spacing.medium),
         
-        // Multiline text field
+        // Multiline input
         const Text('Multiline Input', style: TextStyle(color: Colors.grey)),
         const SizedBox(height: Spacing.small),
-        const CustomTextField(
-          placeholder: 'Enter a detailed description',
-          hint: 'Add more details about what you\'re working on',
+        CustomTextField(
+          placeholder: 'Write a longer description here...',
           maxLines: 3,
         ),
         
@@ -466,8 +491,106 @@ class ComponentShowcase extends StatelessWidget {
         
         const SizedBox(height: Spacing.large),
         
-        // Loading indicators
-        const Text('Loading Indicators', style: TextStyle(color: Colors.grey)),
+        // Loading Spinners
+        const Text('Loading Spinners', style: TextStyle(color: Colors.grey)),
+        const SizedBox(height: Spacing.medium),
+        
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            LoadingSpinner(
+              size: LoadingSpinnerSize.small,
+              label: 'Small',
+            ),
+            LoadingSpinner(
+              size: LoadingSpinnerSize.medium,
+              label: 'Medium',
+            ),
+            LoadingSpinner(
+              size: LoadingSpinnerSize.large,
+              label: 'Large',
+              pulsing: true,
+            ),
+          ],
+        ),
+        
+        const SizedBox(height: Spacing.large),
+        
+        // Error Displays
+        const Text('Error Displays', style: TextStyle(color: Colors.grey)),
+        const SizedBox(height: Spacing.medium),
+        
+        ErrorDisplay(
+          title: 'Connection Failed',
+          message: 'Unable to connect to the WorkVibe server. Please check your network connection.',
+          errorCode: 'ERR-1001',
+          severity: ErrorSeverity.high,
+          resolution: 'Check your internet connection and try again. If the problem persists, contact support.',
+          onRetry: () => debugPrint('Retry connection'),
+        ),
+        
+        const SizedBox(height: Spacing.medium),
+        
+        ErrorDisplay(
+          title: 'Session Conflict',
+          message: 'Your session is already active on another device.',
+          severity: ErrorSeverity.medium,
+          onRetry: () => debugPrint('Take over session'),
+          onDismiss: () => debugPrint('Dismiss warning'),
+        ),
+        
+        const SizedBox(height: Spacing.large),
+        
+        // Progress Indicators
+        const Text('Progress Indicators', style: TextStyle(color: Colors.grey)),
+        const SizedBox(height: Spacing.medium),
+        
+        ProgressDisplay(
+          label: 'Syncing data',
+          value: 0.65,
+          showPercentage: true,
+          description: 'Uploading your session data to the server',
+          timeRemaining: '1 min remaining',
+        ),
+        
+        const SizedBox(height: Spacing.medium),
+        
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(
+              child: ProgressDisplay(
+                type: ProgressIndicatorType.circular,
+                value: 0.3,
+                showPercentage: true,
+                size: 80,
+                color: AppColors.success,
+              ),
+            ),
+            Expanded(
+              child: ProgressDisplay(
+                type: ProgressIndicatorType.circular,
+                value: 0.7,
+                showPercentage: true,
+                size: 80,
+                color: AppColors.warning,
+              ),
+            ),
+            Expanded(
+              child: ProgressDisplay(
+                type: ProgressIndicatorType.circular,
+                value: null, // Indeterminate
+                size: 80,
+                color: AppColors.info,
+              ),
+            ),
+          ],
+        ),
+        
+        const SizedBox(height: Spacing.medium),
+        
+        // Legacy loading indicators (for reference)
+        const Text('Native Loading Indicators', style: TextStyle(color: Colors.grey)),
         const SizedBox(height: Spacing.medium),
         
         Row(
