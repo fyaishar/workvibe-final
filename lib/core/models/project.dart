@@ -4,7 +4,7 @@ import 'task.dart';
 part 'project.freezed.dart';
 part 'project.g.dart';
 
-/// Represents a project in the system
+/// Represents a project in the system.
 @freezed
 class Project with _$Project {
   const factory Project({
