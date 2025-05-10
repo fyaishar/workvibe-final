@@ -10,27 +10,22 @@ class ActiveUsersList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final onlineUsers = ref.watch(onlineUsersProvider);
-    final focusingUsers = ref.watch(focusingUsersProvider);
-    final inMeetingUsers = ref.watch(inMeetingUsersProvider);
-    final awayUsers = ref.watch(awayUsersProvider);
+    final activeUsers = ref.watch(onlineUsersProvider);
+    final pausedUsers = ref.watch(pausedUsersProvider);
+    final idleUsers = ref.watch(idleUsersProvider);
 
     return ListView(
       children: [
-        if (onlineUsers.isNotEmpty) ...[
-          _buildStatusGroup('Online', onlineUsers, Colors.green),
+        if (activeUsers.isNotEmpty) ...[
+          _buildStatusGroup('Active', activeUsers, Colors.green),
           const Divider(),
         ],
-        if (focusingUsers.isNotEmpty) ...[
-          _buildStatusGroup('Focusing', focusingUsers, Colors.blue),
+        if (pausedUsers.isNotEmpty) ...[
+          _buildStatusGroup('Break', pausedUsers, Colors.orange),
           const Divider(),
         ],
-        if (inMeetingUsers.isNotEmpty) ...[
-          _buildStatusGroup('In Meeting', inMeetingUsers, Colors.orange),
-          const Divider(),
-        ],
-        if (awayUsers.isNotEmpty)
-          _buildStatusGroup('Away', awayUsers, Colors.grey),
+        if (idleUsers.isNotEmpty)
+          _buildStatusGroup('Idle', idleUsers, Colors.grey),
       ],
     );
   }
