@@ -157,80 +157,84 @@ class _SessionCardState extends State<SessionCard> {
     return GestureDetector(
       onTap: widget.onTap,
       child: _SessionContainer(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Username in top left with row to match active session's layout
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: SingleChildScrollView( // Allow scrolling if content overflows
+          child: IntrinsicHeight( // Ensure column takes minimum necessary height
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  widget.username,
-                  style: TextStyles.usernamePersonal,
+                // Username in top left with row to match active session's layout
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      widget.username,
+                      style: TextStyles.usernamePersonal,
+                    ),
+                    // Empty space to match active session
+                    const SizedBox(width: 24),
+                  ],
                 ),
-                // Empty space to match active session
-                const SizedBox(width: 24),
-              ],
-            ),
-            // Reduce vertical spacing
-            const SizedBox(height: 12),
-            // What do you want to do? - same as task in active session
-            Container(
-              height: 20,
-              child: TextField(
-                controller: widget.taskController,
-                decoration: InputDecoration(
-                  hintText: 'What do you want to do?',
-                  hintStyle: TextStyle(color: AppColors.secondaryText),
-                  border: InputBorder.none,
-                  filled: true,
-                  fillColor: AppColors.moduleBackground,
-                  contentPadding: EdgeInsets.zero,
-                  isDense: true,
+                // Reduce vertical spacing
+                const SizedBox(height: 12),
+                // What do you want to do? - same as task in active session
+                Container(
+                  height: 20,
+                  child: TextField(
+                    controller: widget.taskController,
+                    decoration: InputDecoration(
+                      hintText: 'What do you want to do?',
+                      hintStyle: TextStyle(color: AppColors.secondaryText),
+                      border: InputBorder.none,
+                      filled: true,
+                      fillColor: AppColors.moduleBackground,
+                      contentPadding: EdgeInsets.zero,
+                      isDense: true,
+                    ),
+                    style: TextStyles.taskPersonal,
+                  ),
                 ),
-                style: TextStyles.taskPersonal,
-              ),
-            ),
-            const SizedBox(height: 2),
-            // What is this for? and Start button - format exactly like project+time row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // TextField styled like the project text
-                Expanded(
-                  child: Container(
-                    height: 20,
-                    child: TextField(
-                      controller: widget.projectController,
-                      decoration: InputDecoration(
-                        hintText: 'What is this for?',
-                        hintStyle: TextStyle(color: AppColors.secondaryText),
-                        border: InputBorder.none,
-                        filled: true,
-                        fillColor: AppColors.moduleBackground,
-                        contentPadding: EdgeInsets.zero,
-                        isDense: true,
+                const SizedBox(height: 2),
+                // What is this for? and Start button - format exactly like project+time row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // TextField styled like the project text
+                    Expanded(
+                      child: Container(
+                        height: 20,
+                        child: TextField(
+                          controller: widget.projectController,
+                          decoration: InputDecoration(
+                            hintText: 'What is this for?',
+                            hintStyle: TextStyle(color: AppColors.secondaryText),
+                            border: InputBorder.none,
+                            filled: true,
+                            fillColor: AppColors.moduleBackground,
+                            contentPadding: EdgeInsets.zero,
+                            isDense: true,
+                          ),
+                          style: TextStyles.projectPersonal,
+                        ),
                       ),
-                      style: TextStyles.projectPersonal,
                     ),
-                  ),
-                ),
-                // Button in place of time indicator
-                SizedBox(
-                  height: 24,
-                  child: ElevatedButton(
-                    onPressed: widget.onStart,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.active,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                    // Button in place of time indicator
+                    SizedBox(
+                      height: 24,
+                      child: ElevatedButton(
+                        onPressed: widget.onStart,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.active,
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                        ),
+                        child: const Text('Start'),
+                      ),
                     ),
-                    child: const Text('Start'),
-                  ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -241,146 +245,150 @@ class _SessionCardState extends State<SessionCard> {
     return GestureDetector(
       onTap: widget.onTap,
       child: _SessionContainer(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Username with pause button
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  widget.username,
-                  style: TextStyles.usernamePersonal,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.pause, color: Colors.white),
-                  onPressed: widget.onPause,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
-              ],
-            ),
-            // Precise spacing
-            const SizedBox(height: 16),
-            // Task with progress dots and checkbox
-            Row(
+        child: SingleChildScrollView( // Allow scrolling
+          child: IntrinsicHeight( // Ensure minimum height
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                // Task and progress dots
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // Task text or edit field
-                      Flexible(
-                        child: _isEditingTask
-                            ? _buildEditTaskField()
-                            : GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _isEditingTask = true;
-                                  });
-                                },
-                                child: Text(
-                                  widget.task,
-                                  style: TextStyles.taskPersonal,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                              ),
-                      ),
-                      // Only show progress dots when not editing
-                      if (!_isEditingTask) ...[
-                        const SizedBox(width: 8),
-                        _buildProgressDots(),
-                      ],
-                    ],
-                  ),
+                // Username with pause button
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      widget.username,
+                      style: TextStyles.usernamePersonal,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.pause, color: Colors.white),
+                      onPressed: widget.onPause,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ],
                 ),
-                // Checkbox (improved styling)
-                Theme(
-                  data: Theme.of(context).copyWith(
-                    checkboxTheme: CheckboxThemeData(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
+                // Precise spacing
+                const SizedBox(height: 16),
+                // Task with progress dots and checkbox
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Task and progress dots
+                    Expanded(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Task text or edit field
+                          Flexible(
+                            child: _isEditingTask
+                                ? _buildEditTaskField()
+                                : GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _isEditingTask = true;
+                                      });
+                                    },
+                                    child: Text(
+                                      widget.task,
+                                      style: TextStyles.taskPersonal,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                          ),
+                          // Only show progress dots when not editing
+                          if (!_isEditingTask) ...[
+                            const SizedBox(width: 8),
+                            _buildProgressDots(),
+                          ],
+                        ],
                       ),
-                      side: BorderSide.none,
-                      fillColor: MaterialStateProperty.resolveWith<Color>((states) {
-                        if (states.contains(MaterialState.selected)) {
-                          return Colors.grey.shade800;
-                        }
-                        return Colors.transparent;
-                      }),
                     ),
-                  ),
-                  child: Container(
-                    width: 28,
-                    height: 28,
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: Colors.white30, width: 1),
-                    ),
-                    child: Transform.scale(
-                      scale: 0.85,
-                      child: Checkbox(
-                        value: widget.isTaskCompleted,
-                        onChanged: widget.onTaskComplete,
-                        activeColor: Colors.transparent,
-                        checkColor: Colors.white,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        visualDensity: VisualDensity.compact,
-                        side: BorderSide.none,
+                    // Checkbox (improved styling)
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                        checkboxTheme: CheckboxThemeData(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          side: BorderSide.none,
+                          fillColor: MaterialStateProperty.resolveWith<Color>((states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.grey.shade800;
+                            }
+                            return Colors.transparent;
+                          }),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 2),
-            // Project name with time indicator on same line
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Project text or edit field
-                _isEditingProject
-                    ? _buildEditProjectField()
-                    : Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _isEditingProject = true;
-                            });
-                          },
-                          child: Text(
-                            widget.projectOrGoal ?? '',
-                            style: TextStyles.projectPersonal,
-                            overflow: TextOverflow.ellipsis,
+                      child: Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: Colors.white30, width: 1),
+                        ),
+                        child: Transform.scale(
+                          scale: 0.85,
+                          child: Checkbox(
+                            value: widget.isTaskCompleted,
+                            onChanged: widget.onTaskComplete,
+                            activeColor: Colors.transparent,
+                            checkColor: Colors.white,
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            visualDensity: VisualDensity.compact,
+                            side: BorderSide.none,
                           ),
                         ),
                       ),
-                // Status dot with time indicator
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 12,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        color: AppColors.active,
-                        shape: BoxShape.circle,
-                      ),
                     ),
-                    const SizedBox(width: 8),
-                    Text(widget.timeIndicator ?? '', style: TextStyles.timeIndicator),
+                  ],
+                ),
+                const SizedBox(height: 2),
+                // Project name with time indicator on same line
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Project text or edit field
+                    _isEditingProject
+                        ? _buildEditProjectField()
+                        : Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _isEditingProject = true;
+                                });
+                              },
+                              child: Text(
+                                widget.projectOrGoal ?? '',
+                                style: TextStyles.projectPersonal,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                    // Status dot with time indicator
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 12,
+                          height: 12,
+                          decoration: BoxDecoration(
+                            color: AppColors.active,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(widget.timeIndicator ?? '', style: TextStyles.timeIndicator),
+                      ],
+                    ),
                   ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -507,11 +515,11 @@ class _SessionCardState extends State<SessionCard> {
 
   /// Builds the original standard session card
   Widget _buildStandardSessionCard() {
-    // Determine styles based on status
     TextStyle usernameStyle;
     TextStyle taskStyle;
     TextStyle projectStyle;
-    
+    String statusTextLabel = ''; // Renamed for clarity
+
     switch (widget.status) {
       case SessionStatus.active:
         usernameStyle = widget.isPersonal ? TextStyles.usernamePersonal : TextStyles.username;
@@ -522,13 +530,49 @@ class _SessionCardState extends State<SessionCard> {
         usernameStyle = TextStyles.usernameBreak;
         taskStyle = TextStyles.taskBreak;
         projectStyle = TextStyles.projectBreak;
+        statusTextLabel = 'Break';
         break;
       case SessionStatus.idle:
         usernameStyle = TextStyles.usernameIdle;
         taskStyle = TextStyles.taskIdle;
         projectStyle = TextStyles.projectIdle;
+        statusTextLabel = 'Idle';
         break;
     }
+
+    Widget cardContent = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min, // Make column take minimum necessary space
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(widget.username, style: usernameStyle),
+            if (widget.timeIndicator != null) // Only show time indicator here, status dot/label handled by Stack
+              Row(
+                children: [
+                  // _buildStatusIndicator(), // Status dot moved to the Stack
+                  // const SizedBox(width: Spacing.small), // Space handled by Stack alignment
+                  Text(
+                    widget.timeIndicator!,
+                    style: TextStyles.timeIndicator,
+                  ),
+                ],
+              ),
+          ],
+        ),
+        const SizedBox(height: Spacing.small),
+        Text(widget.task, style: taskStyle),
+        if (widget.projectOrGoal != null) ...[
+          const SizedBox(height: Spacing.tiny),
+          Text(widget.projectOrGoal!, style: projectStyle),
+        ],
+        if (widget.isPersonal) ...[
+          const SizedBox(height: Spacing.medium),
+          _buildPersonalControls(),
+        ],
+      ],
+    );
 
     return GestureDetector(
       onTap: widget.onTap,
@@ -541,36 +585,29 @@ class _SessionCardState extends State<SessionCard> {
         ),
         child: Padding(
           padding: const EdgeInsets.all(Spacing.cardPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(widget.username, style: usernameStyle),
-                  if (widget.timeIndicator != null)
-                    Row(
-                      children: [
-                        _buildStatusIndicator(),
+              cardContent, // Main card content
+              if (statusTextLabel.isNotEmpty || widget.status != SessionStatus.active) // Show dot for all, label for break/idle
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildStatusIndicator(), // The dot
+                      if (statusTextLabel.isNotEmpty) ...[
                         const SizedBox(width: Spacing.small),
                         Text(
-                          widget.timeIndicator!,
-                          style: TextStyles.timeIndicator,
+                          statusTextLabel,
+                          style: widget.status == SessionStatus.break_ 
+                              ? TextStyles.breakLabel 
+                              : TextStyles.idleLabel,
                         ),
                       ],
-                    ),
-                ],
-              ),
-              const SizedBox(height: Spacing.small),
-              Text(widget.task, style: taskStyle),
-              if (widget.projectOrGoal != null) ...[
-                const SizedBox(height: Spacing.tiny),
-                Text(widget.projectOrGoal!, style: projectStyle),
-              ],
-              if (widget.isPersonal) ...[
-                const SizedBox(height: Spacing.medium),
-                _buildPersonalControls(),
-              ],
+                    ],
+                  ),
+                ),
             ],
           ),
         ),
@@ -646,7 +683,7 @@ class _SessionContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 122,
+      // height: 122, // Removed fixed height to prevent overflow
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: Spacing.cardMarginVertical),
       decoration: BoxDecoration(

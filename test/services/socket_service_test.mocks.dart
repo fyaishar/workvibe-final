@@ -109,91 +109,21 @@ class MockSupabaseRealtimeService extends _i1.Mock
           as _i3.Future<Map<String, dynamic>>);
 
   @override
-  _i3.Future<List<Map<String, dynamic>>> getSessionHistory(String? userId) =>
+  _i3.Future<void> updateSession(
+    String? sessionId,
+    Map<String, dynamic>? sessionData,
+  ) =>
       (super.noSuchMethod(
-            Invocation.method(#getSessionHistory, [userId]),
-            returnValue: _i3.Future<List<Map<String, dynamic>>>.value(
-              <Map<String, dynamic>>[],
-            ),
-          )
-          as _i3.Future<List<Map<String, dynamic>>>);
-
-  @override
-  _i3.Future<void> updateTask(String? sessionId, String? taskId) =>
-      (super.noSuchMethod(
-            Invocation.method(#updateTask, [sessionId, taskId]),
+            Invocation.method(#updateSession, [sessionId, sessionData]),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> updateProject(String? sessionId, String? projectId) =>
+  _i3.Future<void> endSession(String? sessionId) =>
       (super.noSuchMethod(
-            Invocation.method(#updateProject, [sessionId, projectId]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
-          )
-          as _i3.Future<void>);
-
-  @override
-  _i3.Future<void> updateThickness(String? sessionId, DateTime? startTime) =>
-      (super.noSuchMethod(
-            Invocation.method(#updateThickness, [sessionId, startTime]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
-          )
-          as _i3.Future<void>);
-
-  @override
-  _i3.Future<void> updateStatus(String? sessionId, String? status) =>
-      (super.noSuchMethod(
-            Invocation.method(#updateStatus, [sessionId, status]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
-          )
-          as _i3.Future<void>);
-
-  @override
-  _i3.Future<void> endSession(String? sessionId, DateTime? endTime) =>
-      (super.noSuchMethod(
-            Invocation.method(#endSession, [sessionId, endTime]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
-          )
-          as _i3.Future<void>);
-
-  @override
-  _i3.Future<Map<String, dynamic>> createRoom(Map<String, dynamic>? roomData) =>
-      (super.noSuchMethod(
-            Invocation.method(#createRoom, [roomData]),
-            returnValue: _i3.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
-          )
-          as _i3.Future<Map<String, dynamic>>);
-
-  @override
-  _i3.Future<int> getActiveSessions(String? roomId) =>
-      (super.noSuchMethod(
-            Invocation.method(#getActiveSessions, [roomId]),
-            returnValue: _i3.Future<int>.value(0),
-          )
-          as _i3.Future<int>);
-
-  @override
-  _i3.Future<void> updateActiveSessions(String? roomId, int? activeSessions) =>
-      (super.noSuchMethod(
-            Invocation.method(#updateActiveSessions, [roomId, activeSessions]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
-          )
-          as _i3.Future<void>);
-
-  @override
-  _i3.Future<void> deleteRoom(String? roomId) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteRoom, [roomId]),
+            Invocation.method(#endSession, [sessionId]),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )

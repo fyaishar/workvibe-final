@@ -4,111 +4,60 @@ import '../../../app/theme/spacing.dart';
 import '../../../app/theme/text_styles.dart';
 import '../../../shared/widgets/session_card/session_card.dart';
 
-/// A system for visualizing user statuses with appropriate effects
+/// A system for visualizing user statuses with appropriate opacity effects.
+/// The label itself is now handled within the SessionCard.
 class StatusVisualizer extends StatelessWidget {
-  /// The status to visualize
+  /// The status to visualize.
   final SessionStatus status;
   
-  /// The child widget to apply effects to
+  /// The child widget to apply effects to.
   final Widget child;
   
-  /// Whether to show a status label
-  final bool showLabel;
-  
-  /// Custom label text (uses default if not provided)
+  // @deprecated The showLabel, labelText, and labelAlignment parameters are no longer used by StatusVisualizer.
+  // The label is now displayed directly within the SessionCard.
+  final bool showLabel; 
   final String? labelText;
-  
-  /// Position of the label (defaults to top right)
   final Alignment labelAlignment;
 
   const StatusVisualizer({
     Key? key,
     required this.status,
     required this.child,
-    this.showLabel = true,
+    this.showLabel = false, // Default to false as it's not used by this widget anymore
     this.labelText,
-    this.labelAlignment = Alignment.topRight,
+    this.labelAlignment = Alignment.topRight, // Kept for signature, but not used
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Base widget - always wrap child in Container to allow for styling
     Widget result = child;
     
-    // Apply appropriate effects based on status
+    // Apply appropriate opacity effects based on status
     switch (status) {
       case SessionStatus.active:
         // Active status - no dimming, full opacity
-        result = Container(
-          child: result,
-        );
-        break;
+        break; // No Opacity widget needed
         
       case SessionStatus.break_:
         // Break status - moderate dimming
         result = Opacity(
-          opacity: 0.6, // Moderate dimming
-          child: Container(
-            child: result,
-          ),
+          opacity: 0.6,
+          child: child, // Apply opacity directly to the child
         );
         break;
         
       case SessionStatus.idle:
         // Idle status - significant dimming
         result = Opacity(
-          opacity: 0.3, // Significant dimming
-          child: Container(
-            child: result,
-          ),
+          opacity: 0.3,
+          child: child, // Apply opacity directly to the child
         );
         break;
     }
     
-    // Add status label if requested
-    if (showLabel && status != SessionStatus.active) {
-      result = Stack(
-        children: [
-          result,
-          Positioned.fill(
-            child: Align(
-              alignment: labelAlignment,
-              child: _buildStatusLabel(),
-            ),
-          ),
-        ],
-      );
-    }
-    
+    // The Stack and Positioned.fill for the label are removed.
+    // The label is now expected to be part of the child (e.g., SessionCard).
     return result;
-  }
-  
-  /// Build the status label based on status
-  Widget _buildStatusLabel() {
-    if (labelText != null) {
-      return _StatusLabel(
-        text: labelText!,
-        status: status,
-      );
-    }
-    
-    String text;
-    switch (status) {
-      case SessionStatus.active:
-        text = 'Active';
-        break;
-      case SessionStatus.break_:
-        text = 'Break';
-        break;
-      case SessionStatus.idle:
-        text = 'Idle';
-        break;
-    }
-    
-    return _StatusLabel(
-      text: text, 
-      status: status,
-    );
   }
 }
 
@@ -156,6 +105,10 @@ class _StatusLabel extends StatelessWidget {
   }
   
   Color _getBackgroundColor() {
+    // Temporarily bright yellow for identification
+    if (status == SessionStatus.break_ || status == SessionStatus.idle) {
+      return Colors.yellow;
+    }
     switch (status) {
       case SessionStatus.active:
         return AppColors.active.withOpacity(0.1);

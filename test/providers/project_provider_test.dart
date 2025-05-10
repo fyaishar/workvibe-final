@@ -9,7 +9,7 @@ void main() {
         id: '1', 
         name: 'Active Project', 
         description: 'Description 1', 
-        status: ProjectStatus.active,
+        status: 'active',
         createdAt: DateTime.now().subtract(const Duration(days: 2)),
         updatedAt: DateTime.now().subtract(const Duration(days: 1)),
       ),
@@ -17,7 +17,7 @@ void main() {
         id: '2', 
         name: 'Completed Project',
         description: 'Description 2',
-        status: ProjectStatus.completed,
+        status: 'completed',
         createdAt: DateTime.now().subtract(const Duration(days: 1)),
         updatedAt: DateTime.now(),
       ),
@@ -25,7 +25,7 @@ void main() {
         id: '3', 
         name: 'Archived Project',
         description: 'Description 3',
-        status: ProjectStatus.archived,
+        status: 'archived',
         createdAt: DateTime.now().subtract(const Duration(days: 3)),
         updatedAt: DateTime.now(),
       ),
@@ -34,37 +34,37 @@ void main() {
     test('filters active projects correctly', () {
       // Apply the filter logic directly (extracted from filteredProjectsProvider)
       final List<Project> filteredProjects = mockProjects
-          .where((project) => project.status == ProjectStatus.active)
+          .where((project) => project.status == 'active')
           .toList();
       
       // Verify
       expect(filteredProjects.length, 1);
       expect(filteredProjects[0].id, '1');
-      expect(filteredProjects[0].status, ProjectStatus.active);
+      expect(filteredProjects[0].status, 'active');
     });
     
     test('filters completed projects correctly', () {
       // Apply the filter logic directly (extracted from filteredProjectsProvider)
       final List<Project> filteredProjects = mockProjects
-          .where((project) => project.status == ProjectStatus.completed)
+          .where((project) => project.status == 'completed')
           .toList();
       
       // Verify
       expect(filteredProjects.length, 1);
       expect(filteredProjects[0].id, '2');
-      expect(filteredProjects[0].status, ProjectStatus.completed);
+      expect(filteredProjects[0].status, 'completed');
     });
     
     test('filters archived projects correctly', () {
       // Apply the filter logic directly (extracted from filteredProjectsProvider)
       final List<Project> filteredProjects = mockProjects
-          .where((project) => project.status == ProjectStatus.archived)
+          .where((project) => project.status == 'archived')
           .toList();
       
       // Verify
       expect(filteredProjects.length, 1);
       expect(filteredProjects[0].id, '3');
-      expect(filteredProjects[0].status, ProjectStatus.archived);
+      expect(filteredProjects[0].status, 'archived');
     });
     
     test('sorts projects by name correctly', () {
@@ -74,6 +74,7 @@ void main() {
           id: '1', 
           name: 'Z Project', 
           description: 'Description 1',
+          status: 'active',
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         ),
@@ -81,6 +82,7 @@ void main() {
           id: '2', 
           name: 'A Project',
           description: 'Description 2',
+          status: 'active',
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         ),
@@ -88,6 +90,7 @@ void main() {
           id: '3', 
           name: 'M Project',
           description: 'Description 3',
+          status: 'active',
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         ),
@@ -111,6 +114,7 @@ void main() {
           id: '1', 
           name: 'New Project', 
           description: 'Description 1',
+          status: 'active',
           createdAt: now,
           updatedAt: now,
         ),
@@ -118,6 +122,7 @@ void main() {
           id: '2', 
           name: 'Old Project',
           description: 'Description 2',
+          status: 'active',
           createdAt: now.subtract(const Duration(days: 2)),
           updatedAt: now,
         ),
@@ -125,6 +130,7 @@ void main() {
           id: '3', 
           name: 'Older Project',
           description: 'Description 3',
+          status: 'active',
           createdAt: now.subtract(const Duration(days: 5)),
           updatedAt: now,
         ),

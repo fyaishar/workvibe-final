@@ -6,16 +6,16 @@ import '../../lib/shared/widgets/session_card/session_card.dart';
 
 void main() {
   group('StatusVisualizer Widget Tests', () {
-    testWidgets('Active status has no dimming effect', (WidgetTester tester) async {
-      // Build the StatusVisualizer with active status
+    testWidgets('Applies no opacity for active status and renders child', (WidgetTester tester) async {
+      const testKey = Key('childContent');
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
             home: Scaffold(
               body: StatusVisualizer(
                 status: SessionStatus.active,
-                showLabel: false,
                 child: Container(
+                  key: testKey,
                   width: 200,
                   height: 100,
                   color: Colors.blue,
@@ -27,28 +27,28 @@ void main() {
         ),
       );
 
-      // Verify the content is displayed
+      // Verify the child content is displayed
       expect(find.text('Active Content'), findsOneWidget);
-      // Active status should not show any status label
+      expect(find.byKey(testKey), findsOneWidget);
+      // No labels should be rendered by StatusVisualizer itself
       expect(find.text('Active'), findsNothing);
-      
-      // We can't directly test opacity levels in widget tests,
-      // but we can verify the widget builds successfully
+      expect(find.text('Break'), findsNothing);
+      expect(find.text('Idle'), findsNothing);
     });
 
-    testWidgets('Break status shows break label', (WidgetTester tester) async {
-      // Build the StatusVisualizer with break status
+    testWidgets('Applies break status opacity and renders child', (WidgetTester tester) async {
+      const testKey = Key('childContent');
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
             home: Scaffold(
               body: StatusVisualizer(
                 status: SessionStatus.break_,
-                showLabel: true,
                 child: Container(
+                  key: testKey,
                   width: 200,
                   height: 100,
-                  color: Colors.blue,
+                  color: Colors.green,
                   child: const Center(child: Text('Break Content')),
                 ),
               ),
@@ -57,25 +57,27 @@ void main() {
         ),
       );
 
-      // Verify the content is displayed
+      // Verify the child content is displayed
       expect(find.text('Break Content'), findsOneWidget);
-      // Break label should be visible
-      expect(find.text('Break'), findsOneWidget);
+      expect(find.byKey(testKey), findsOneWidget);
+      // StatusVisualizer should not render any text labels itself.
+      // The label is now part of the SessionCard or other child widgets.
+      expect(find.text('Break', skipOffstage: false), findsNothing);
     });
 
-    testWidgets('Idle status shows idle label', (WidgetTester tester) async {
-      // Build the StatusVisualizer with idle status
+    testWidgets('Applies idle status opacity and renders child', (WidgetTester tester) async {
+      const testKey = Key('childContent');
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
             home: Scaffold(
               body: StatusVisualizer(
                 status: SessionStatus.idle,
-                showLabel: true,
                 child: Container(
+                  key: testKey,
                   width: 200,
                   height: 100,
-                  color: Colors.blue,
+                  color: Colors.orange,
                   child: const Center(child: Text('Idle Content')),
                 ),
               ),
@@ -84,27 +86,30 @@ void main() {
         ),
       );
 
-      // Verify the content is displayed
+      // Verify the child content is displayed
       expect(find.text('Idle Content'), findsOneWidget);
-      // Idle label should be visible
-      expect(find.text('Idle'), findsOneWidget);
+      expect(find.byKey(testKey), findsOneWidget);
+      // StatusVisualizer should not render any text labels itself.
+      expect(find.text('Idle', skipOffstage: false), findsNothing);
     });
 
-    testWidgets('Custom label text is displayed', (WidgetTester tester) async {
-      // Build the StatusVisualizer with custom label
+    testWidgets('Deprecated label parameters do not cause errors and render child', (WidgetTester tester) async {
+      const testKey = Key('childContent');
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
             home: Scaffold(
               body: StatusVisualizer(
-                status: SessionStatus.break_,
-                showLabel: true,
-                labelText: 'Custom Label',
+                status: SessionStatus.break_, // Using break to ensure opacity is applied
+                showLabel: true, // Deprecated, should do nothing
+                labelText: 'This Should Not Appear', // Deprecated, should do nothing
+                labelAlignment: Alignment.center, // Deprecated, should do nothing
                 child: Container(
+                  key: testKey,
                   width: 200,
                   height: 100,
-                  color: Colors.blue,
-                  child: const Center(child: Text('Content')),
+                  color: Colors.purple,
+                  child: const Center(child: Text('Content with Deprecated Params')),
                 ),
               ),
             ),
@@ -112,37 +117,11 @@ void main() {
         ),
       );
 
-      // Verify the custom label is used
-      expect(find.text('Custom Label'), findsOneWidget);
-      expect(find.text('Break'), findsNothing);
-    });
-
-    testWidgets('Label alignment works correctly', (WidgetTester tester) async {
-      // Build the StatusVisualizer with custom alignment
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(
-            home: Scaffold(
-              body: StatusVisualizer(
-                status: SessionStatus.break_,
-                showLabel: true,
-                labelAlignment: Alignment.bottomRight,
-                child: Container(
-                  width: 200,
-                  height: 100,
-                  color: Colors.blue,
-                  child: const Center(child: Text('Content')),
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-
-      // We can't easily test the actual alignment position in widget tests,
-      // but we can verify the widget builds successfully
-      expect(find.text('Content'), findsOneWidget);
-      expect(find.text('Break'), findsOneWidget);
+      expect(find.text('Content with Deprecated Params'), findsOneWidget);
+      expect(find.byKey(testKey), findsOneWidget);
+      // No labels should be rendered by StatusVisualizer
+      expect(find.text('This Should Not Appear', skipOffstage: false), findsNothing);
+      expect(find.text('Break', skipOffstage: false), findsNothing); // Default label for break shouldn't appear either
     });
   });
 } 

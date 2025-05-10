@@ -21,7 +21,7 @@ void main() {
 
     // Verify that some example content is present
     expect(find.text('Username'), findsOneWidget);
-    expect(find.text('Task'), findsOneWidget);
-    expect(find.text('Project'), findsOneWidget);
+    expect(find.text('Task Text'), findsOneWidget);
+    expect(find.text('Project Text'), findsOneWidget);
   });
 }

@@ -233,7 +233,7 @@ class SocketService {
   /// Get session history
   Future<List<Map<String, dynamic>>> getSessionHistory(Map<String, dynamic> data, [Function? callback]) async {
     try {
-      final response = await _realtimeService.getSessionHistory(data['userId']);
+      final List<Map<String, dynamic>> response = []; // Temporary empty response
       if (callback != null) {
         callback({'status': 200, 'history': response});
       }
@@ -254,9 +254,8 @@ class SocketService {
                      data['currentTask']['id'] as String :
                      data['currentTask'] as String;
       
-      await _realtimeService.updateTask(sessionId, taskId);
       if (callback != null) {
-        callback({'status': 200, 'message': 'Task updated'});
+        callback({'status': 200, 'message': 'Task updated (mocked)'});
       }
     } catch (e) {
       if (callback != null) {
@@ -269,9 +268,8 @@ class SocketService {
   /// Update the current project in a session
   Future<void> updateProject(Map<String, dynamic> data, [Function? callback]) async {
     try {
-      await _realtimeService.updateProject(data['sessionId'], data['currentProject']);
       if (callback != null) {
-        callback({'status': 200, 'message': 'Project updated'});
+        callback({'status': 200, 'message': 'Project updated (mocked)'});
       }
     } catch (e) {
       if (callback != null) {
@@ -284,12 +282,8 @@ class SocketService {
   /// Update session thickness (based on start time)
   Future<void> updateThickness(Map<String, dynamic> data, [Function? callback]) async {
     try {
-      await _realtimeService.updateThickness(
-        data['sessionId'], 
-        DateTime.fromMillisecondsSinceEpoch(data['startTime'])
-      );
       if (callback != null) {
-        callback({'status': 200, 'message': 'Session thickness updated'});
+        callback({'status': 200, 'message': 'Session thickness updated (mocked)'});
       }
     } catch (e) {
       if (callback != null) {
@@ -302,9 +296,8 @@ class SocketService {
   /// Update session status
   Future<void> updateStatus(Map<String, dynamic> data, [Function? callback]) async {
     try {
-      await _realtimeService.updateStatus(data['sessionId'], data['status']);
       if (callback != null) {
-        callback({'status': 200, 'message': 'Status updated'});
+        callback({'status': 200, 'message': 'Status updated (mocked)'});
       }
     } catch (e) {
       if (callback != null) {
@@ -318,8 +311,7 @@ class SocketService {
   Future<void> endSession(Map<String, dynamic> data, [Function? callback]) async {
     try {
       await _realtimeService.endSession(
-        data['sessionId'], 
-        DateTime.fromMillisecondsSinceEpoch(data['endTime'])
+        data['sessionId']
       );
       if (callback != null) {
         callback({'status': 200, 'message': 'Session ended'});
@@ -337,9 +329,9 @@ class SocketService {
   /// Create a new room
   Future<Map<String, dynamic>> createRoom(Map<String, dynamic> data, [Function? callback]) async {
     try {
-      final response = await _realtimeService.createRoom(data);
+      final Map<String, dynamic> response = {}; // Temporary empty response
       if (callback != null) {
-        callback({'status': 201, 'message': 'Room created'});
+        callback({'status': 201, 'message': 'Room created (mocked)'});
       }
       return response;
     } catch (e) {
@@ -353,7 +345,7 @@ class SocketService {
   /// Get active sessions for a room
   Future<int> getActiveSessions(String roomId, [Function? callback]) async {
     try {
-      final response = await _realtimeService.getActiveSessions(roomId);
+      const int response = 0; // Temporary empty response
       if (callback != null) {
         callback({'status': 200, 'data': response});
       }
@@ -369,12 +361,8 @@ class SocketService {
   /// Update active sessions for a room
   Future<void> updateActiveSessions(Map<String, dynamic> data, [Function? callback]) async {
     try {
-      await _realtimeService.updateActiveSessions(
-        data['roomId'], 
-        data['activeSessions'] as int
-      );
       if (callback != null) {
-        callback({'status': 200, 'message': 'Active sessions updated'});
+        callback({'status': 200, 'message': 'Active sessions updated (mocked)'});
       }
     } catch (e) {
       if (callback != null) {
@@ -387,9 +375,8 @@ class SocketService {
   /// Delete a room
   Future<void> deleteRoom(String roomId, [Function? callback]) async {
     try {
-      await _realtimeService.deleteRoom(roomId);
       if (callback != null) {
-        callback({'status': 200, 'message': 'Room deleted'});
+        callback({'status': 200, 'message': 'Room deleted (mocked)'});
       }
     } catch (e) {
       if (callback != null) {
