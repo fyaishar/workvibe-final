@@ -25,6 +25,10 @@ class AppColors {
   static const Color idle = Color(0xFF444444); // Even more dimmed for idle
   static const Color idleText = Color(0xFF999999);
   
+  // Custom button states
+  static const Color inactive = Color(0xFF444444); // For disabled buttons
+  static const Color inactiveText = Color(0xFF777777); // Text color for disabled buttons
+  
   // Border thickness level colors (can be the same but with different opacity)
   static const Color borderLevel1 = Color(0xFF3A3A3A); // 5 minutes
   static const Color borderLevel8 = Color(0xFFE53935); // 300 minutes (5 hours)
@@ -57,7 +61,7 @@ class UsernameColors {
   static const Color blue = Color(0xFF3E95FF);
   static const Color green = Color(0xFF26D07C);
   static const Color purple = Color(0xFFB264F8);
-  static const Color orange = Color(0xFFFF8C38);
+  static const Color orange = Color(0xFF8C38FF);
   static const Color yellow = Color(0xFFFFD02F);
   static const Color pink = Color(0xFFFF6B9E);
   

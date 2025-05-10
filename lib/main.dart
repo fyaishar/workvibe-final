@@ -14,6 +14,7 @@ import 'shared/widgets/showcase/showcase_screen.dart';
 import 'app/theme/theme.dart';
 import 'app/theme/colors.dart';
 import 'features/session/presentation/session_screen.dart';
+import 'shared/widgets/buttons.dart'; // Import our custom buttons
 
 // Global logging service instance for use in error handling.
 final LoggingService _logger = LoggingService();
@@ -156,18 +157,41 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
+            // Use our custom button instead of ElevatedButton
+            CustomButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/session');
               },
               child: const Text('Open Session Screen'),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
+            // Use our custom button instead of ElevatedButton
+            CustomButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/showcase');
               },
               child: const Text('UI Component Showcase'),
+            ),
+            const SizedBox(height: 20),
+            // Add a text button example
+            CustomTextButton(
+              onPressed: () {
+                // Show a simple dialog
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Custom Buttons'),
+                    content: const Text('All Material Design ripple effects have been removed!'),
+                    actions: [
+                      CustomButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Close'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              child: const Text('About Custom Buttons'),
             ),
           ],
         ),

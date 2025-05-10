@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'colors.dart';
 import 'text_styles.dart';
 import 'spacing.dart';
+import 'transitions.dart'; // Import our custom transitions
 
 /// Main theme configuration for the application.
 /// The dark theme is mandatory per PRD requirements.
@@ -27,6 +28,17 @@ class AppTheme {
         bodySmall: TextStyles.username,
         titleMedium: TextStyles.sectionHeader,
         labelLarge: TextStyles.buttonText,
+      ),
+      // Add custom page transitions to remove Material's sliding animations
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: FadeTransitionBuilder(),
+          TargetPlatform.iOS: FadeTransitionBuilder(),
+          TargetPlatform.macOS: FadeTransitionBuilder(),
+          TargetPlatform.windows: FadeTransitionBuilder(),
+          TargetPlatform.linux: FadeTransitionBuilder(),
+          TargetPlatform.fuchsia: FadeTransitionBuilder(),
+        },
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -98,6 +110,17 @@ class AppTheme {
         error: AppColors.error,
       ),
       canvasColor: Colors.white,
+      // Add the same custom page transitions to the light theme
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: FadeTransitionBuilder(),
+          TargetPlatform.iOS: FadeTransitionBuilder(),
+          TargetPlatform.macOS: FadeTransitionBuilder(),
+          TargetPlatform.windows: FadeTransitionBuilder(),
+          TargetPlatform.linux: FadeTransitionBuilder(),
+          TargetPlatform.fuchsia: FadeTransitionBuilder(),
+        },
+      ),
       // The rest is similar to dark theme but with adjusted colors
       // As per PRD, dark theme is the main focus, so this is simplified
     );
