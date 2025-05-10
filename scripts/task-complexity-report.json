@@ -1,7 +1,7 @@
 {
   "meta": {
-    "generatedAt": "2025-05-07T16:47:27.805Z",
-    "tasksAnalyzed": 24,
+    "generatedAt": "2025-05-10T21:42:08.623Z",
+    "tasksAnalyzed": 34,
     "thresholdScore": 5,
     "projectName": "Taskmaster",
     "usedResearch": true
@@ -10,194 +10,274 @@
     {
       "taskId": 4,
       "taskTitle": "User Profile Management",
-      "complexityScore": 7,
-      "recommendedSubtasks": 5,
-      "expansionPrompt": "Break down the User Profile Management task into 5 subtasks covering model design, repository implementation, UI development, avatar functionality, and integration with existing systems.",
-      "reasoning": "This task involves both data modeling and UI implementation with multiple integration points. It requires extending existing models, creating new repositories, implementing UI components, and ensuring proper integration with Firebase and existing session management."
+      "complexityScore": 8,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Break down the User Profile Management task into subtasks covering model evaluation/creation, repository implementation, CRUD methods, UI for editing, avatar upload, integration with status, real-time updates, validation, Riverpod state management, and comprehensive testing.",
+      "reasoning": "This task involves significant backend and frontend work, including model design, repository integration, UI development, real-time updates, and state management. It touches multiple architectural layers and requires careful coordination with existing systems, making it a high-complexity task that benefits from detailed subtasking."
     },
     {
       "taskId": 6,
       "taskTitle": "Task CRUD Operations",
-      "complexityScore": 6,
-      "recommendedSubtasks": 4,
-      "expansionPrompt": "Divide the Task CRUD Operations into 4 subtasks focusing on repository implementation, state management, real-time updates, and security configuration.",
-      "reasoning": "This task involves standard CRUD operations with Supabase integration, requiring repository implementation, state management, real-time updates, and security configuration. The complexity comes from implementing real-time functionality and proper error handling."
+      "complexityScore": 8,
+      "recommendedSubtasks": 12,
+      "expansionPrompt": "Expand Task CRUD Operations into subtasks for repository setup, referencing old_backend, implementing create/read/update/delete, validation, error handling, real-time updates, schema configuration, RLS policies, compatibility checks, and comprehensive testing.",
+      "reasoning": "This task covers full CRUD lifecycle, real-time updates, schema and security policy setup, and compatibility with legacy logic. The breadth of integration and the need for robust error handling and validation increase its complexity."
     },
     {
       "taskId": 9,
       "taskTitle": "Real-time Status Updates",
       "complexityScore": 7,
-      "recommendedSubtasks": 4,
-      "expansionPrompt": "Break down the Real-time Status Updates task into 4 subtasks covering presence repository implementation, UI indicators, automatic status updates, and Supabase Realtime integration.",
-      "reasoning": "This task involves real-time communication, which adds complexity. It requires implementing a presence system, creating UI indicators, handling automatic status updates, and integrating with Supabase Realtime through an existing SocketService."
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Decompose Real-time Status Updates into subtasks for repository creation, Supabase Realtime integration, UI indicators, automatic/manual status logic, offline detection, Riverpod state, optimization, and event subscription.",
+      "reasoning": "While focused on a single feature area, this task requires real-time backend integration, UI work, and optimization, making it moderately complex and suitable for multiple subtasks."
     },
     {
       "taskId": 10,
       "taskTitle": "Real-time Task Updates",
-      "complexityScore": 7,
-      "recommendedSubtasks": 4,
-      "expansionPrompt": "Divide the Real-time Task Updates task into 4 subtasks focusing on Supabase Realtime listeners, notification UI, conflict resolution, and offline support.",
-      "reasoning": "This task builds on previous work but adds complexity with conflict resolution, optimistic updates, and offline support. It requires integrating with Supabase Realtime and implementing sophisticated synchronization logic."
+      "complexityScore": 8,
+      "recommendedSubtasks": 9,
+      "expansionPrompt": "Break down Real-time Task Updates into subtasks for setting up listeners, integrating with SocketService, notification logic, UI, conflict resolution, optimistic updates, offline support, background sync, and notification preferences.",
+      "reasoning": "This task involves real-time data handling, conflict management, offline support, and user notification systems, all of which add to its complexity and require careful subtasking."
     },
     {
       "taskId": 11,
       "taskTitle": "UI Components Implementation",
-      "complexityScore": 8,
-      "recommendedSubtasks": 5,
-      "expansionPrompt": "Break down the UI Components Implementation task into 5 subtasks covering theme system enhancement, core component development, feedback components, responsive layouts, and accessibility features.",
-      "reasoning": "This task already has 5 subtasks defined and covers a broad range of UI work including theme enhancement, component creation, responsive layouts, animations, and accessibility. The complexity comes from ensuring consistency across multiple components and platforms."
+      "complexityScore": 9,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Expand UI Components Implementation into subtasks for theme system enhancement, reusable component creation, responsive layout, animations, accessibility, documentation, and comprehensive UI testing.",
+      "reasoning": "This task is broad, covering theming, component design, accessibility, responsiveness, and documentation. It impacts the entire UI layer and requires coordination across many features, making it highly complex."
     },
     {
       "taskId": 12,
       "taskTitle": "Navigation and Routing",
-      "complexityScore": 6,
-      "recommendedSubtasks": 4,
-      "expansionPrompt": "Divide the Navigation and Routing task into 4 subtasks covering router configuration, authentication guards, navigation components, and deep linking support.",
-      "reasoning": "This task involves implementing navigation using Go Router, which includes route definitions, authentication guards, transitions, and deep linking. The complexity is moderate as Flutter provides good routing capabilities."
+      "complexityScore": 7,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Divide Navigation and Routing into subtasks for router configuration, route definitions, navigation guards, deep linking, transitions, history management, navigation bar, tab navigation, and web URL strategy.",
+      "reasoning": "Navigation touches all screens and requires careful handling of authentication, deep linking, and platform-specific behaviors, making it moderately complex."
     },
     {
       "taskId": 14,
       "taskTitle": "Offline Capability Implementation",
       "complexityScore": 9,
-      "recommendedSubtasks": 5,
-      "expansionPrompt": "Break down the Offline Capability Implementation task into 5 subtasks covering local database setup, synchronization service, conflict resolution, background sync, and UI indicators.",
-      "reasoning": "This task has high complexity due to the challenges of offline data synchronization, conflict resolution, and ensuring data integrity. It requires implementing local storage, sync mechanisms, and handling various network conditions."
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Break down Offline Capability Implementation into subtasks for local database setup, sync service, offline CRUD, conflict resolution, background sync, sync indicators, data prioritization, bandwidth optimization, offline toggle, and real-time sync integration.",
+      "reasoning": "Implementing robust offline support with sync, conflict resolution, and real-time integration is highly complex and cross-cutting, requiring many coordinated subtasks."
     },
     {
       "taskId": 15,
       "taskTitle": "Notifications System",
       "complexityScore": 8,
-      "recommendedSubtasks": 5,
-      "expansionPrompt": "Divide the Notifications System task into 5 subtasks covering Supabase Realtime integration, push notification setup, notification handling, UI implementation, and preference management.",
-      "reasoning": "This task involves complex integration with Supabase Realtime and Functions for both in-app and push notifications. It requires handling different notification types, creating UI components, and implementing user preferences."
+      "recommendedSubtasks": 11,
+      "expansionPrompt": "Expand Notifications System into subtasks for in-app and push notification integration, Supabase Functions, notification handling, preferences UI, notification types, center UI, grouping, actions, badges, sound/vibration, and Supabase schema setup.",
+      "reasoning": "This task involves both backend and frontend work, real-time event handling, user preferences, and multiple notification types, making it complex and requiring detailed breakdown."
     },
     {
       "taskId": 16,
       "taskTitle": "Performance Optimization",
       "complexityScore": 8,
-      "recommendedSubtasks": 4,
-      "expansionPrompt": "Break down the Performance Optimization task into 4 subtasks focusing on lazy loading implementation, state management optimization, memory usage monitoring, and startup time reduction.",
-      "reasoning": "Performance optimization is inherently complex as it requires deep understanding of the application architecture and potential bottlenecks. This task involves optimizing various aspects including loading, animations, memory usage, and startup time."
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Divide Performance Optimization into subtasks for lazy loading, image optimization, state management, memory monitoring, animation optimization, widget caching, profiling, query optimization, pagination, and startup time reduction.",
+      "reasoning": "Performance optimization is a cross-cutting concern that requires analysis and improvements across multiple layers, each needing focused attention."
     },
     {
       "taskId": 17,
       "taskTitle": "Unit and Widget Testing",
-      "complexityScore": 7,
-      "recommendedSubtasks": 4,
-      "expansionPrompt": "Divide the Unit and Widget Testing task into 4 subtasks covering repository tests, state management tests, UI component tests, and integration tests.",
-      "reasoning": "This task requires implementing comprehensive testing across the application with >80% coverage target. It involves unit tests, widget tests, golden tests, and integration tests, which requires significant effort and expertise."
+      "complexityScore": 8,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Break down Unit and Widget Testing into subtasks for test planning, repository tests, state management tests, widget tests, mocks, golden tests, integration tests, CI/CD setup, coverage reporting, and coverage achievement.",
+      "reasoning": "Achieving high test coverage across a complex codebase requires systematic planning, implementation, and automation, making this a high-complexity task."
     },
     {
       "taskId": 18,
       "taskTitle": "Analytics and Reporting",
-      "complexityScore": 6,
-      "recommendedSubtasks": 3,
-      "expansionPrompt": "Break down the Analytics and Reporting task into 3 subtasks covering Firebase Analytics integration, visualization components, and report generation.",
-      "reasoning": "This task involves integrating Firebase Analytics, implementing custom event tracking, and creating visualization components. The complexity is moderate as Firebase provides good analytics capabilities."
+      "complexityScore": 7,
+      "recommendedSubtasks": 9,
+      "expansionPrompt": "Expand Analytics and Reporting into subtasks for analytics integration, event tracking, report generation, task analytics, productivity metrics, visualization components, export functionality, activity tracking, and dashboard UI.",
+      "reasoning": "Analytics involves backend integration, data processing, visualization, and reporting, each of which can be complex but are well-defined areas for subtasking."
     },
     {
       "taskId": 20,
       "taskTitle": "App Deployment and Release",
-      "complexityScore": 5,
-      "recommendedSubtasks": 3,
-      "expansionPrompt": "Divide the App Deployment and Release task into 3 subtasks focusing on app signing configuration, CI/CD pipeline setup, and feature flag implementation.",
-      "reasoning": "This task involves standard deployment procedures including app signing, store listings, CI/CD setup, and feature flags. While comprehensive, these are well-documented processes with established patterns."
+      "complexityScore": 8,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Break down App Deployment and Release into subtasks for app signing, store listings, versioning, CI/CD setup, release checklist, feature flags, in-app updates, beta testing, release notes, and review prompts.",
+      "reasoning": "Deployment involves multiple platform-specific steps, automation, and compliance, each requiring careful attention and validation."
     },
     {
       "taskId": 21,
       "taskTitle": "Session Timer and Visual Indicators Implementation",
-      "complexityScore": 8,
-      "recommendedSubtasks": 5,
-      "expansionPrompt": "Break down the Session Timer task into 5 subtasks covering timer core functionality, idle state detection, visual indicator implementation, persistence layer, and integration with existing systems.",
-      "reasoning": "This task involves complex timer functionality with multiple states, idle detection, and visual indicators that change based on duration. It requires background operation, persistence, and integration with other components."
+      "complexityScore": 9,
+      "recommendedSubtasks": 12,
+      "expansionPrompt": "Expand Session Timer and Visual Indicators Implementation into subtasks for timer core, pause/resume, idle detection, termination, Supabase persistence, border visualization, state integration, background service, battery optimization, edge case handling, UI integration, and comprehensive testing.",
+      "reasoning": "This task combines real-time logic, background processing, UI feedback, and integration with multiple systems, making it highly complex and in need of granular subtasking."
     },
     {
       "taskId": 22,
       "taskTitle": "Implement Task-Session Many-to-Many Relationship",
-      "complexityScore": 7,
-      "recommendedSubtasks": 4,
-      "expansionPrompt": "Divide the Task-Session Relationship implementation into 4 subtasks covering database schema design, model implementation, service methods, and UI integration.",
-      "reasoning": "This task requires implementing a many-to-many relationship between tasks and sessions, which involves database schema design, model creation, service methods, and UI integration. The complexity comes from managing the relationship and calculating derived metrics."
+      "complexityScore": 8,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Break down Task-Session Many-to-Many Relationship into subtasks for schema design, model implementation, service methods, UI integration, time tracking logic, analytics, business logic, error handling, testing, and documentation.",
+      "reasoning": "Implementing many-to-many relationships with time tracking and analytics requires careful backend and frontend coordination, increasing complexity."
     },
     {
       "taskId": 24,
       "taskTitle": "Implement Personal Session Module with Visual Separation",
-      "complexityScore": 6,
-      "recommendedSubtasks": 3,
-      "expansionPrompt": "Break down the Personal Session Module task into 3 subtasks covering visual design implementation, functionality development, and integration with state management.",
-      "reasoning": "This task focuses on UI implementation with specific positioning and styling requirements. It involves creating input fields, status displays, and control buttons with proper state management integration."
+      "complexityScore": 8,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Expand Personal Session Module into subtasks for visual design, input fields, status display, control buttons, state management, integration, accessibility, and responsive design.",
+      "reasoning": "This task involves UI/UX, state management, accessibility, and integration with other modules, making it complex and suitable for detailed subtasking."
     },
     {
       "taskId": 25,
       "taskTitle": "Implement Single-Screen Interface with Start and Active States",
-      "complexityScore": 6,
-      "recommendedSubtasks": 3,
-      "expansionPrompt": "Divide the Single-Screen Interface task into 3 subtasks focusing on Start state implementation, Active state implementation, and transition animations.",
-      "reasoning": "This task involves creating a unified interface with two distinct states and smooth transitions between them. It requires careful UI design and state management to ensure consistency and proper integration with other components."
+      "complexityScore": 8,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Break down Single-Screen Interface into subtasks for start state UI, active state UI, state management, transitions/animations, Personal Session Module integration, responsiveness, accessibility, and error handling.",
+      "reasoning": "Managing a unified interface with dynamic state transitions and integration with other modules is complex and benefits from clear subtask delineation."
     },
     {
       "taskId": 26,
-      "taskTitle": "Implement Task Completion Workflow with Checkbox UI and Timeout Logic",
+      "taskTitle": "Task Completion Workflow with Checkbox UI and Timeout Logic",
       "complexityScore": 7,
-      "recommendedSubtasks": 4,
-      "expansionPrompt": "Break down the Task Completion Workflow into 4 subtasks covering checkbox UI implementation, field clearing functionality, timeout logic, and session continuation/termination logic.",
-      "reasoning": "This task involves implementing a complex workflow with multiple components including a checkbox UI, field clearing, timeout logic, and session management. It requires precise timing and proper integration with existing components."
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Expand Task Completion Workflow into subtasks for checkbox UI, field clearing, timeout logic, session continuation/termination, integration with session module, accessibility, and testing.",
+      "reasoning": "This workflow involves UI, timing logic, state transitions, and integration, making it moderately complex and requiring several focused subtasks."
     },
     {
       "taskId": 27,
-      "taskTitle": "Implement Enhanced Input Fields with Validation and Feedback",
-      "complexityScore": 5,
-      "recommendedSubtasks": 3,
-      "expansionPrompt": "Divide the Enhanced Input Fields task into 3 subtasks focusing on component design, validation logic, and visual feedback mechanisms.",
-      "reasoning": "This task involves creating enhanced input field components with validation and visual feedback. While it requires attention to detail for accessibility and user experience, the complexity is moderate as it builds on standard form patterns."
+      "taskTitle": "Enhanced Input Fields with Validation and Feedback",
+      "complexityScore": 7,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Break down Enhanced Input Fields into subtasks for component design, validation logic, visual feedback, accessibility, integration, debounce implementation, documentation, and testing.",
+      "reasoning": "Input validation and feedback require careful UI/UX, accessibility, and integration work, making this a moderately complex task."
     },
     {
       "taskId": 28,
-      "taskTitle": "Implement Cross-Platform User Activity Tracking System",
-      "complexityScore": 8,
-      "recommendedSubtasks": 4,
-      "expansionPrompt": "Break down the User Activity Tracking System into 4 subtasks covering activity detection mechanisms, state management, platform-specific implementations, and integration with session management.",
-      "reasoning": "This task involves implementing a complex activity tracking system that works across platforms with different detection mechanisms. It requires handling platform-specific behaviors, accurate timing, and proper integration with session management."
+      "taskTitle": "Cross-Platform User Activity Tracking System",
+      "complexityScore": 9,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Expand User Activity Tracking System into subtasks for activity detection (web/macOS), state management, timer logic, session termination, platform-specific handling, integration with session timer, performance optimization, real-time updates, persistence, and testing.",
+      "reasoning": "Cross-platform activity tracking with real-time state management and integration is highly complex, requiring detailed subtasking for reliability and maintainability."
     },
     {
       "taskId": 30,
-      "taskTitle": "Implement Project/Goal Field Management",
-      "complexityScore": 5,
-      "recommendedSubtasks": 3,
-      "expansionPrompt": "Divide the Project/Goal Field Management task into 3 subtasks covering data model extension, UI implementation, and search/filtering functionality.",
-      "reasoning": "This task involves extending existing models and UI to support an optional field. While it touches multiple areas of the application, the changes are relatively straightforward and build on existing patterns."
+      "taskTitle": "Project/Goal Field Management",
+      "complexityScore": 7,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Break down Project/Goal Field Management into subtasks for model extension, schema update, UI implementation, backend logic, real-time updates, search/filtering, analytics, and testing.",
+      "reasoning": "Adding optional fields with real-time updates and analytics is moderately complex, involving both backend and frontend changes."
     },
     {
       "taskId": 31,
-      "taskTitle": "Implement State Transition Logic System",
+      "taskTitle": "State Transition Logic System",
       "complexityScore": 9,
-      "recommendedSubtasks": 5,
-      "expansionPrompt": "Break down the State Transition Logic System into 5 subtasks covering state model definition, transition rules implementation, validation logic, event handling, and integration with existing systems.",
-      "reasoning": "This task involves implementing a complex state machine with multiple states, transition rules, validation logic, and integration points. It requires careful design to ensure thread-safety, proper error handling, and recovery mechanisms."
+      "recommendedSubtasks": 12,
+      "expansionPrompt": "Expand State Transition Logic System into subtasks for state model definition, transition rules, Riverpod integration, timer integration, activity tracking integration, validation, logging, event listeners, thread safety, recovery mechanisms, configuration, and documentation.",
+      "reasoning": "Implementing a robust state machine with integration, validation, and recovery is highly complex and requires granular subtasking."
     },
     {
       "taskId": 32,
-      "taskTitle": "Implement Real-time User List Management",
-      "complexityScore": 7,
-      "recommendedSubtasks": 4,
-      "expansionPrompt": "Divide the Real-time User List Management task into 4 subtasks focusing on UI component creation, real-time event handling, sorting/filtering logic, and edge case handling.",
-      "reasoning": "This task involves creating UI components and logic for displaying and managing active users in real-time. It requires handling various events, efficient list updates, and proper integration with existing real-time systems."
+      "taskTitle": "Real-time User List Management",
+      "complexityScore": 8,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Break down Real-time User List Management into subtasks for UI component creation, presence event subscription, join/leave handling, info updates, sorting/filtering, configuration options, edge case handling, WebSocket integration, loading/error states, and testing.",
+      "reasoning": "Managing real-time user lists with presence, sorting, and efficient updates is complex and requires multiple coordinated subtasks."
     },
     {
       "taskId": 33,
-      "taskTitle": "Implement Real-time Broadcast Service for User Actions and Session Events",
-      "complexityScore": 8,
-      "recommendedSubtasks": 5,
-      "expansionPrompt": "Break down the Real-time Broadcast Service into 5 subtasks covering service architecture, event type implementation, integration with existing systems, performance optimization, and security features.",
-      "reasoning": "This task involves creating a comprehensive service for real-time communication with multiple event types, integration points, and security considerations. It requires careful design to ensure reliability, performance, and proper error handling."
+      "taskTitle": "Real-time Broadcast Service for User Actions and Session Events",
+      "complexityScore": 9,
+      "recommendedSubtasks": 12,
+      "expansionPrompt": "Expand Real-time Broadcast Service into subtasks for service architecture, event subscription, broadcasting methods, event payload design, error handling, integration with WebSocket and Riverpod, performance optimization, security, documentation, and comprehensive testing.",
+      "reasoning": "Abstracting real-time communication across the app with robust error handling, security, and performance is highly complex and foundational."
     },
     {
       "taskId": 34,
-      "taskTitle": "Implement Dynamic Border Thickness Visualization System",
-      "complexityScore": 6,
-      "recommendedSubtasks": 3,
-      "expansionPrompt": "Divide the Dynamic Border Thickness Visualization task into 3 subtasks covering calculation logic, visual implementation, and real-time update integration.",
-      "reasoning": "This task involves implementing a visual feedback system with 8 distinct levels based on session duration. While it requires careful visual design and real-time updates, the core logic is relatively straightforward."
+      "taskTitle": "Dynamic Border Thickness Visualization System",
+      "complexityScore": 7,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Break down Dynamic Border Thickness Visualization into subtasks for calculation logic, visual implementation, real-time updates, integration with session modules, technical considerations (CSS/animation), documentation, and testing.",
+      "reasoning": "While focused, this task involves real-time UI updates, integration, and accessibility, making it moderately complex."
+    },
+    {
+      "taskId": 36,
+      "taskTitle": "Session CRUD Operations with Supabase Integration",
+      "complexityScore": 8,
+      "recommendedSubtasks": 9,
+      "expansionPrompt": "Expand Session CRUD Operations into subtasks for repository setup, CRUD methods, real-time integration, error handling, data transformation, documentation, Riverpod integration, compatibility checks, and testing.",
+      "reasoning": "Session management with real-time updates and integration with state management is complex and requires detailed subtasking."
+    },
+    {
+      "taskId": 37,
+      "taskTitle": "Project CRUD Operations with Supabase Integration",
+      "complexityScore": 8,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Break down Project CRUD Operations into subtasks for repository setup, CRUD methods, team management, Supabase integration, state management, data models, UI integration, business logic, compatibility checks, and testing.",
+      "reasoning": "Project management involves complex relationships, real-time updates, and business logic, making it a high-complexity task."
+    },
+    {
+      "taskId": 38,
+      "taskTitle": "Room CRUD Operations with Supabase Integration",
+      "complexityScore": 8,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Expand Room CRUD Operations into subtasks for repository setup, CRUD methods, real-time integration, session management, data model extension, Riverpod providers, error handling, compatibility with old_backend, documentation, and testing.",
+      "reasoning": "Room management with real-time updates, session handling, and compatibility requirements is complex and benefits from detailed subtasking."
+    },
+    {
+      "taskId": 39,
+      "taskTitle": "Logbook CRUD Operations with Supabase Integration",
+      "complexityScore": 8,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Break down Logbook CRUD Operations into subtasks for repository setup, CRUD methods, real-time integration, data model extension, state management, compatibility with old_backend, documentation, UI integration, error handling, and testing.",
+      "reasoning": "Logbook management involves complex data relationships, real-time updates, and compatibility, making it a high-complexity task."
+    },
+    {
+      "taskId": 40,
+      "taskTitle": "Unified Repository Pattern for Supabase CRUD Operations",
+      "complexityScore": 10,
+      "recommendedSubtasks": 12,
+      "expansionPrompt": "Expand Unified Repository Pattern into subtasks for base interface design, generic implementation, Supabase client setup, CRUD methods, real-time subscription management, error handling, entity-specific repositories, Riverpod providers, documentation, compatibility with Freezed models, integration with state management, and comprehensive testing.",
+      "reasoning": "This foundational task underpins all data operations, requiring careful design, abstraction, integration, and documentation, making it the most complex and critical for project success."
+    },
+    {
+      "taskId": 41,
+      "taskTitle": "Unified Real-time Event System for Supabase",
+      "complexityScore": 10,
+      "recommendedSubtasks": 12,
+      "expansionPrompt": "Break down Unified Real-time Event System into subtasks for event mapping, bridge layer design, event registry, event bus, adapters, connection management, event filtering, room-based broadcasting, private channels, event replay, documentation, and integration.",
+      "reasoning": "Creating a unified, backward-compatible real-time event system is architecturally complex, requiring deep integration, extensibility, and robust documentation."
+    },
+    {
+      "taskId": 42,
+      "taskTitle": "Room Matching System with User Criteria and Assignment Logic",
+      "complexityScore": 9,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Expand Room Matching System into subtasks for matching algorithm design, room assignment logic, lifecycle management, real-time integration, migration/compatibility, error handling, logging, modularization, performance optimization, and testing.",
+      "reasoning": "Room matching involves algorithmic complexity, real-time updates, lifecycle management, and compatibility, making it highly complex and requiring detailed subtasking."
+    },
+    {
+      "taskId": 43,
+      "taskTitle": "Session State Transition System with State Machine",
+      "complexityScore": 9,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Break down Session State Transition System into subtasks for state machine implementation, event handlers, timing logic, integration with repository and event system, business rule validation, error handling, migration, logging, documentation, and testing.",
+      "reasoning": "Implementing a robust state machine with event-driven transitions and integration is highly complex and foundational for session management."
+    },
+    {
+      "taskId": 44,
+      "taskTitle": "User Authentication Bridge from Supabase to Firebase",
+      "complexityScore": 9,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Expand User Authentication Bridge into subtasks for token verification, session management, authorization rules mapping, API compatibility layer, error handling, user profile management, migration support, documentation, security testing, and integration.",
+      "reasoning": "Bridging two authentication systems with full compatibility, security, and migration support is highly complex and critical for seamless user experience."
+    },
+    {
+      "taskId": 45,
+      "taskTitle": "User Activity Tracking and Idle State Management System",
+      "complexityScore": 9,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Break down User Activity Tracking and Idle State Management into subtasks for activity detection, state management logic, real-time broadcasting, session state integration, persistence, configuration API, privacy/performance optimization, platform-specific handling, documentation, and testing.",
+      "reasoning": "Cross-platform activity tracking with real-time state management, privacy, and performance considerations is highly complex and requires granular subtasking."
     }
   ]
 }
