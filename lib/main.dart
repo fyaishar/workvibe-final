@@ -15,7 +15,7 @@ import 'app/theme/theme.dart';
 import 'app/theme/colors.dart';
 import 'features/session/presentation/session_screen.dart';
 
-// Global logging service instance for use in error handling
+// Global logging service instance for use in error handling.
 final LoggingService _logger = LoggingService();
 
 // Add a global key for navigator access
