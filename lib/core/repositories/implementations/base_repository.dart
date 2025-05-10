@@ -1,23 +1,30 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:async';
 
-import '../../models/exceptions/repository_exception.dart';
+import '../../models/exceptions/repository_exceptions.dart';
 import '../interfaces/base_repository.dart';
+import '../../../services/error/repository_error_handler.dart';
 import '../../../services/error/supabase_error_handler.dart';
 import '../../../services/error/logging_service.dart';
+import '../../../services/subscription/subscription_manager.dart';
+import '../../utils/model_adapter_mixin.dart';
 
 /// Base implementation of the IRepository interface using Supabase as the backend.
 ///
 /// This generic repository handles CRUD operations and real-time subscriptions
 /// for any entity type T. Subclasses should specify the table name and provide
 /// conversion methods between Supabase JSON data and the entity model.
-abstract class SupabaseRepository<T> implements IRepository<T> {
+abstract class SupabaseRepository<T> with FreezedModelAdapterMixin implements IRepository<T> {
   /// The Supabase client instance
   final SupabaseClient _client = Supabase.instance.client;
   
   /// Error handling utilities
   final _errorHandler = SupabaseErrorHandler();
+  final _repositoryErrorHandler = RepositoryErrorHandler();
   final _loggingService = LoggingService();
+  
+  /// The subscription manager instance
+  final SubscriptionManager _subscriptionManager = SubscriptionManager();
   
   /// The table name in the Supabase database for this entity type
   String get tableName;
@@ -40,410 +47,242 @@ abstract class SupabaseRepository<T> implements IRepository<T> {
   @override
   Future<T?> getById(String id) async {
     try {
-      final result = await _errorHandler.executeWithRetry(
+      final result = await _repositoryErrorHandler.executeWithRetry(
         operationName: 'getById',
         operation: () => _client
             .from(tableName)
             .select()
             .eq(primaryKeyField, id)
             .single(),
-        tableName: tableName,
-        recordId: id,
+        entityType: tableName,
+        entityId: id,
       );
       
-      return fromJson(result);
-    } catch (e, stackTrace) {
-      _loggingService.error(
-        'Failed to get entity by ID',
-        category: LogCategory.database,
-        error: e,
-        stackTrace: stackTrace,
-        additionalData: {'table': tableName, 'id': id},
-      );
-      
-      // Return null if the record wasn't found
-      if (e.toString().contains('not found') || 
-          e.toString().contains('no rows returned')) {
+      // Adapt the Supabase result to a Freezed-compatible format before conversion
+      return result != null ? fromJson(adaptToFreezed(result)) : null;
+    } catch (e) {
+      // Special handling for 'not found' errors - return null instead of throwing
+      if (e is ResourceNotFoundException) {
         return null;
       }
-      
-      throw RepositoryException(
-        operation: 'getById',
-        message: 'Failed to fetch $tableName with ID $id',
-        originalError: e,
-      );
+      rethrow;
     }
   }
   
   @override
   Future<List<T>> getAll() async {
-    try {
-      final result = await _errorHandler.executeWithRetry(
-        operationName: 'getAll',
-        operation: () => _client
-            .from(tableName)
-            .select(),
-        tableName: tableName,
-      );
-      
-      return (result as List<dynamic>)
-          .map((item) => fromJson(item))
-          .toList();
-    } catch (e, stackTrace) {
-      _loggingService.error(
-        'Failed to get all entities',
-        category: LogCategory.database,
-        error: e,
-        stackTrace: stackTrace,
-        additionalData: {'table': tableName},
-      );
-      
-      throw RepositoryException(
-        operation: 'getAll',
-        message: 'Failed to fetch all $tableName records',
-        originalError: e,
-      );
-    }
+    final result = await _repositoryErrorHandler.executeWithRetry(
+      operationName: 'getAll',
+      operation: () => _client
+          .from(tableName)
+          .select(),
+      entityType: tableName,
+    );
+    
+    // Adapt each result item and convert to entity
+    return (result as List<dynamic>)
+        .map((item) => item is Map<String, dynamic> 
+            ? fromJson(adaptToFreezed(item)) 
+            : throw FormatException('Expected a map but got ${item.runtimeType}'))
+        .toList();
   }
   
   @override
   Future<List<T>> query(Map<String, dynamic> queryParams) async {
-    try {
-      // Start with the basic query
-      var query = _client.from(tableName).select();
-      
-      // Apply each query parameter as a filter
-      queryParams.forEach((field, value) {
-        if (value is List) {
-          query = query.inFilter(field, value);
-        } else {
-          query = query.eq(field, value);
-        }
-      });
-      
-      // Execute the query
-      final result = await _errorHandler.executeWithRetry(
-        operationName: 'query',
-        operation: () => query,
-        tableName: tableName,
-      );
-      
-      return (result as List<dynamic>)
-          .map((item) => fromJson(item))
-          .toList();
-    } catch (e, stackTrace) {
-      _loggingService.error(
-        'Failed to query entities',
-        category: LogCategory.database,
-        error: e,
-        stackTrace: stackTrace,
-        additionalData: {
-          'table': tableName,
-          'queryParams': queryParams.toString(),
-        },
-      );
-      
-      throw RepositoryException(
-        operation: 'query',
-        message: 'Failed to query $tableName records',
-        originalError: e,
-      );
-    }
+    // Start with the basic query
+    var query = _client.from(tableName).select();
+    
+    // Apply each query parameter as a filter
+    queryParams.forEach((field, value) {
+      if (value is List) {
+        query = query.inFilter(field, value);
+      } else {
+        query = query.eq(field, value);
+      }
+    });
+    
+    // Execute the query
+    final result = await _repositoryErrorHandler.executeWithRetry(
+      operationName: 'query',
+      operation: () => query,
+      entityType: tableName,
+      context: {'queryParams': queryParams},
+    );
+    
+    // Adapt results and convert to entities
+    return (result as List<dynamic>)
+        .map((item) => item is Map<String, dynamic> 
+            ? fromJson(adaptToFreezed(item)) 
+            : throw FormatException('Expected a map but got ${item.runtimeType}'))
+        .toList();
   }
   
   @override
   Future<T> create(T entity) async {
-    try {
-      final entityJson = toJson(entity);
-      
-      final result = await _errorHandler.executeWithRetry(
-        operationName: 'create',
-        operation: () => _client
-            .from(tableName)
-            .insert(entityJson)
-            .select()
-            .single(),
-        tableName: tableName,
-      );
-      
-      return fromJson(result);
-    } catch (e, stackTrace) {
-      _loggingService.error(
-        'Failed to create entity',
-        category: LogCategory.database,
-        error: e,
-        stackTrace: stackTrace,
-        additionalData: {
-          'table': tableName,
-          'entity': toJson(entity).toString(),
-        },
-      );
-      
-      throw RepositoryException(
-        operation: 'create',
-        message: 'Failed to create new $tableName record',
-        originalError: e,
-      );
-    }
+    // Convert entity to JSON and adapt for Supabase
+    final freezedJson = toJson(entity);
+    final entityJson = adaptToSupabase(freezedJson);
+    
+    // Validate entity before creating
+    _validateEntity(entityJson, 'create');
+    
+    // Create the entity in the database
+    final result = await _repositoryErrorHandler.executeWithRetry(
+      operationName: 'create',
+      operation: () => _client
+          .from(tableName)
+          .insert(entityJson)
+          .select()
+          .single(),
+      entityType: tableName,
+      context: {'entityData': entityJson},
+    );
+    
+    // Adapt the result to Freezed format and return as entity
+    return fromJson(adaptToFreezed(result));
   }
   
   @override
   Future<T> update(T entity) async {
-    try {
-      final id = getIdFromEntity(entity);
-      final entityJson = toJson(entity);
-      
-      final result = await _errorHandler.executeWithRetry(
-        operationName: 'update',
-        operation: () => _client
-            .from(tableName)
-            .update(entityJson)
-            .eq(primaryKeyField, id)
-            .select()
-            .single(),
-        tableName: tableName,
-        recordId: id,
-      );
-      
-      return fromJson(result);
-    } catch (e, stackTrace) {
-      _loggingService.error(
-        'Failed to update entity',
-        category: LogCategory.database,
-        error: e,
-        stackTrace: stackTrace,
-        additionalData: {
-          'table': tableName,
-          'entity': toJson(entity).toString(),
-        },
-      );
-      
-      throw RepositoryException(
-        operation: 'update',
-        message: 'Failed to update $tableName record',
-        originalError: e,
-      );
-    }
+    final id = getIdFromEntity(entity);
+    
+    // Convert entity to JSON and adapt for Supabase
+    final freezedJson = toJson(entity);
+    final entityJson = adaptToSupabase(freezedJson);
+    
+    // Validate entity before updating
+    _validateEntity(entityJson, 'update');
+    
+    // Update the entity in the database
+    final result = await _repositoryErrorHandler.executeWithRetry(
+      operationName: 'update',
+      operation: () => _client
+          .from(tableName)
+          .update(entityJson)
+          .eq(primaryKeyField, id)
+          .select()
+          .single(),
+      entityType: tableName,
+      entityId: id,
+      context: {'entityData': entityJson},
+    );
+    
+    // Adapt the result to Freezed format and return as entity
+    return fromJson(adaptToFreezed(result));
   }
   
   @override
   Future<bool> delete(String id) async {
     try {
-      await _errorHandler.executeWithRetry(
+      await _repositoryErrorHandler.executeWithRetry(
         operationName: 'delete',
         operation: () => _client
             .from(tableName)
             .delete()
             .eq(primaryKeyField, id),
-        tableName: tableName,
-        recordId: id,
+        entityType: tableName,
+        entityId: id,
       );
       
       return true;
-    } catch (e, stackTrace) {
-      _loggingService.error(
-        'Failed to delete entity',
-        category: LogCategory.database,
-        error: e,
-        stackTrace: stackTrace,
-        additionalData: {'table': tableName, 'id': id},
-      );
-      
+    } catch (e) {
       // If the error is that the record wasn't found, consider the delete successful
-      if (e.toString().contains('not found') || 
-          e.toString().contains('no rows affected')) {
+      if (e is ResourceNotFoundException) {
+        _loggingService.info(
+          'Delete operation on non-existent record treated as success',
+          category: LogCategory.database,
+          additionalData: {'table': tableName, 'id': id},
+        );
         return true;
       }
-      
-      throw RepositoryException(
-        operation: 'delete',
-        message: 'Failed to delete $tableName record with ID $id',
-        originalError: e,
-      );
+      rethrow;
     }
   }
   
   @override
   Stream<List<T>> subscribe() {
-    final controller = StreamController<List<T>>();
-    
-    // Initial fetch of all records
-    getAll().then((entities) {
-      // Only add to the stream if the controller is still active
-      if (!controller.isClosed) {
-        controller.add(entities);
-      }
-    }).catchError((e) {
-      // Log the error but don't close the stream
-      _loggingService.error(
-        'Error fetching initial data for subscription',
-        category: LogCategory.realtime,
-        error: e,
-        additionalData: {'table': tableName},
-      );
-      
-      // If the controller is still open, add an empty list
-      if (!controller.isClosed) {
-        controller.add([]);
-      }
-    });
-    
-    // Set up the real-time subscription
-    final channelName = 'public:$tableName';
-    final channel = _client.channel(channelName);
-    
-    channel.onPostgresChanges(
-      event: PostgresChangeEvent.all,
-      schema: 'public',
-      table: tableName,
-      callback: (payload) async {
-        try {
-          // Fetch all records again when there are changes
-          final updatedEntities = await getAll();
-          if (!controller.isClosed) {
-            controller.add(updatedEntities);
-          }
-        } catch (e) {
-          _loggingService.error(
-            'Error handling subscription update',
-            category: LogCategory.realtime,
-            error: e,
-            additionalData: {'table': tableName, 'payload': payload.toString()},
-          );
-        }
-      },
-    ).subscribe();
-    
-    // Clean up when the stream is canceled
-    controller.onCancel = () {
-      _client.removeChannel(channel);
-    };
-    
-    return controller.stream;
+    // Create subscription using the SubscriptionManager
+    return _subscriptionManager
+        .subscribeToTable(tableName)
+        .map((records) => records
+            .map((item) => fromJson(adaptToFreezed(item)))
+            .toList());
   }
   
   @override
   Stream<T?> subscribeToId(String id) {
-    final controller = StreamController<T?>();
-    
-    // Initial fetch of the record
-    getById(id).then((entity) {
-      // Only add to the stream if the controller is still active
-      if (!controller.isClosed) {
-        controller.add(entity);
-      }
-    }).catchError((e) {
-      // Log the error but don't close the stream
-      _loggingService.error(
-        'Error fetching initial data for ID subscription',
-        category: LogCategory.realtime,
-        error: e,
-        additionalData: {'table': tableName, 'id': id},
-      );
-      
-      // If the controller is still open, add null
-      if (!controller.isClosed) {
-        controller.add(null);
-      }
-    });
-    
-    // Set up the real-time subscription specifically for this record
-    final channelName = 'public:$tableName:id_$id';
-    final channel = _client.channel(channelName);
-    
-    // PostgresChangeFilter for filtering by ID
-    final filter = PostgresChangeFilter(
-      type: PostgresChangeFilterType.eq,
-      column: primaryKeyField,
-      value: id,
-    );
-    
-    channel.onPostgresChanges(
-      event: PostgresChangeEvent.all,
-      schema: 'public',
-      table: tableName,
-      filter: filter,
-      callback: (payload) async {
-        try {
-          // Handle the specific event type
-          if (payload.eventType == PostgresChangeEvent.delete) {
-            if (!controller.isClosed) {
-              controller.add(null);
-            }
-          } else {
-            // For INSERT or UPDATE, fetch the latest version
-            final updatedEntity = await getById(id);
-            if (!controller.isClosed) {
-              controller.add(updatedEntity);
-            }
-          }
-        } catch (e) {
-          _loggingService.error(
-            'Error handling ID subscription update',
-            category: LogCategory.realtime,
-            error: e,
-            additionalData: {
-              'table': tableName,
-              'id': id,
-              'payload': payload.toString(),
-            },
-          );
-        }
-      },
-    ).subscribe();
-    
-    // Clean up when the stream is canceled
-    controller.onCancel = () {
-      _client.removeChannel(channel);
-    };
-    
-    return controller.stream;
+    // Create subscription using the SubscriptionManager
+    return _subscriptionManager
+        .subscribeToRecord(tableName, id)
+        .map((record) => record != null ? fromJson(adaptToFreezed(record)) : null);
+  }
+  
+  /// Subscribes to a filtered query on this repository's table
+  Stream<List<T>> subscribeToQuery(Map<String, dynamic> queryParams) {
+    // Create subscription using the SubscriptionManager
+    return _subscriptionManager
+        .subscribeToQuery(tableName, queryParams)
+        .map((records) => records
+            .map((item) => fromJson(adaptToFreezed(item)))
+            .toList());
   }
   
   @override
   Future<List<T>> executeQuery(String query, {Map<String, dynamic>? params}) async {
-    try {
-      final result = await _errorHandler.executeWithRetry(
-        operationName: 'executeQuery',
-        operation: () => _client.rpc(
-          query,
-          params: params ?? {},
-        ),
-        tableName: tableName,
-      );
-      
-      // Check if the result is a list that can be converted to entities
-      if (result is List) {
-        return result
-            .map((item) => item is Map<String, dynamic> ? fromJson(item) : null)
-            .whereType<T>()
-            .toList();
-      }
-      
-      // If the result is a single entity
-      if (result is Map<String, dynamic>) {
-        return [fromJson(result)];
-      }
-      
-      // Return empty list for other result types
-      return [];
-    } catch (e, stackTrace) {
-      _loggingService.error(
-        'Failed to execute custom query',
-        category: LogCategory.database,
-        error: e,
-        stackTrace: stackTrace,
-        additionalData: {
-          'query': query,
-          'params': params?.toString(),
-        },
-      );
-      
-      throw RepositoryException(
-        operation: 'executeQuery',
-        message: 'Failed to execute custom query: ${query.substring(0, query.length > 30 ? 30 : query.length)}...',
-        originalError: e,
-      );
+    final result = await _repositoryErrorHandler.executeWithRetry(
+      operationName: 'executeQuery',
+      operation: () => _client.rpc(
+        query,
+        params: params ?? {},
+      ),
+      entityType: tableName,
+      context: {
+        'query': query,
+        if (params != null) 'params': params,
+      },
+    );
+    
+    // Check if the result is a list that can be converted to entities
+    if (result is List) {
+      return result
+          .map((item) => item is Map<String, dynamic> 
+              ? fromJson(adaptToFreezed(item)) 
+              : null)
+          .whereType<T>()
+          .toList();
     }
+    
+    // If the result is a single entity
+    if (result is Map<String, dynamic>) {
+      return [fromJson(adaptToFreezed(result))];
+    }
+    
+    // Return empty list for other result types
+    return [];
+  }
+  
+  /// Validates entity data before create/update operations
+  /// 
+  /// This provides a hook for subclasses to implement validation logic.
+  /// It should throw a [ValidationException] when validation fails.
+  void _validateEntity(Map<String, dynamic> entityJson, String operation) {
+    // Base implementation doesn't do validation
+    // Subclasses can override this method to implement specific validation
+  }
+  
+  /// Helper method to create a validation exception with field-specific errors
+  ValidationException createValidationException({
+    required String operation,
+    required Map<String, String> validationErrors,
+    String? message,
+    Object? originalError,
+  }) {
+    return ValidationException(
+      operation: operation,
+      message: message ?? 'Validation failed for $tableName entity',
+      validationErrors: validationErrors,
+      originalError: originalError,
+      context: {'table': tableName},
+    );
   }
 } 

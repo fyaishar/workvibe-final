@@ -144,69 +144,7 @@ class TaskRepository extends SupabaseRepository<Task> implements ITaskRepository
   
   @override
   Stream<List<Task>> getProjectTasksStream(String projectId) {
-    // Create a stream controller
-    final controller = StreamController<List<Task>>();
-    
-    // Initial fetch of project tasks
-    getTasksByProject(projectId)
-      .then((tasks) {
-        if (!controller.isClosed) {
-          controller.add(tasks);
-        }
-      })
-      .catchError((e) {
-        _logger.error(
-          'Error fetching initial project tasks',
-          category: LogCategory.realtime,
-          error: e,
-          additionalData: {'projectId': projectId},
-        );
-        
-        if (!controller.isClosed) {
-          controller.add([]);
-        }
-      });
-    
-    // Set up the real-time subscription for the tasks table
-    final channelName = 'public:tasks:project_$projectId';
-    final channel = _supabase.channel(channelName);
-    
-    // Set up filter for this project
-    final filter = PostgresChangeFilter(
-      type: PostgresChangeFilterType.eq,
-      column: 'project_id',
-      value: projectId,
-    );
-    
-    channel.onPostgresChanges(
-      event: PostgresChangeEvent.all,
-      schema: 'public',
-      table: tableName,
-      filter: filter,
-      callback: (payload) async {
-        try {
-          // When any task for this project changes, refetch all project tasks
-          final updatedTasks = await getTasksByProject(projectId);
-          
-          if (!controller.isClosed) {
-            controller.add(updatedTasks);
-          }
-        } catch (e) {
-          _logger.error(
-            'Error handling project tasks update',
-            category: LogCategory.realtime,
-            error: e,
-            additionalData: {'projectId': projectId},
-          );
-        }
-      },
-    ).subscribe();
-    
-    // Clean up when the stream is canceled
-    controller.onCancel = () {
-      _supabase.removeChannel(channel);
-    };
-    
-    return controller.stream;
+    // Use subscribeToQuery from the base repository
+    return subscribeToQuery({'project_id': projectId});
   }
 } 
