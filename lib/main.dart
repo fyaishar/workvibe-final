@@ -11,6 +11,9 @@ import 'config/env.dart';
 import 'services/supabase_service.dart';
 import 'services/error/index.dart';
 import 'shared/widgets/showcase/showcase_screen.dart';
+import 'app/theme/theme.dart';
+import 'app/theme/colors.dart';
+import 'features/session/presentation/session_screen.dart';
 
 // Global logging service instance for use in error handling
 final LoggingService _logger = LoggingService();
@@ -106,7 +109,7 @@ void main() async {
     runApp(
       ProviderScope(
         observers: [RiverpodLogger()],
-        child: const MyApp(),
+        child: const WorkVibeApp(),
       ),
     );
   }, (error, stackTrace) {
@@ -126,14 +129,13 @@ class WorkVibeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Work Vibe',
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFF1A1A1A), // Dark background from AppColors
-        brightness: Brightness.dark, // Ensure dark theme
-      ),
+      title: 'WorkVibe',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.dark, // Use dark theme per PRD requirement
       home: const HomeScreen(),
       routes: {
-        '/showcase': (context) => const ShowcaseScreen(), // Add showcase route
+        '/session': (context) => const SessionScreen(),
+        '/showcase': (context) => const ShowcaseScreen(),
       },
     );
   }
@@ -145,24 +147,29 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.dark.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Work Vibe'),
-        backgroundColor: Colors.black,
-        actions: [
-          // Add a button to access the showcase
-          IconButton(
-            icon: const Icon(Icons.palette),
-            tooltip: 'UI Component Showcase',
-            onPressed: () {
-              Navigator.pushNamed(context, '/showcase');
-            },
-          ),
-        ],
+        title: const Text('WorkVibe'),
+        backgroundColor: AppColors.moduleBackground,
       ),
-      body: const Center(
-        child: Text(
-          'Work Vibe App',
-          style: TextStyle(color: Colors.white),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/session');
+              },
+              child: const Text('Open Session Screen'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/showcase');
+              },
+              child: const Text('UI Component Showcase'),
+            ),
+          ],
         ),
       ),
     );
