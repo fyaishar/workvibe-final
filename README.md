@@ -114,9 +114,124 @@ CREATE TABLE task_sessions (
 );
 ```
 
+## Architecture
+
+### Feature-First Architecture
+
+The codebase is organized around features rather than layers, following a feature-first architecture pattern:
+
+```
+lib/
+├── features/
+│   ├── auth/             # Authentication feature
+│   │   ├── repository/   # Data layer
+│   │   ├── screens/      # UI components
+│   │   └── state/        # Feature state
+│   └── session/          # Session management feature
+│       ├── data/         # Data sources
+│       ├── domain/       # Business logic
+│       └── presentation/ # UI components
+```
+
+Each feature is a self-contained module with its own UI components, business logic, and data access layers.
+
+### Clean Architecture
+
+The project follows clean architecture principles with clear separation between:
+
+- **Presentation Layer**: UI components (screens, widgets)
+- **Domain Layer**: Business logic and models
+- **Data Layer**: Data sources and repositories
+
+This separation ensures that business logic is decoupled from UI and data access concerns.
+
+## State Management
+
+Workvibe uses **Flutter Riverpod** for state management with:
+
+- Provider observers for monitoring state changes
+- Freezed annotations for immutable state objects 
+- Separation of state from UI components
+
+## Supabase Integration
+
+The application leverages Supabase for multiple backend services:
+
+### Authentication
+- Email/password authentication
+- OAuth providers (Google, Apple)
+- Password reset functionality
+- Session management with JWT
+
+### Real-time Database
+- PostgreSQL database (schema detailed above)
+- Real-time data subscriptions
+- Row-level security policies
+
+### Serverless Functions
+- Edge functions for server-side logic
+- Webhook integrations
+
+## UI Framework
+
+The application uses a consistent design system with:
+
+- Dark theme as the primary theme
+- Custom fonts (Eina01)
+- Material Design components with custom styling
+- Component showcase for design system reference (accessible via `/showcase` route)
+
+## Development Workflow
+
+The project uses TaskMaster for task management:
+
+- Task definition and tracking in `tasks/` directory
+- Dependency management between tasks
+- Task expansion into subtasks
+- Progress tracking through task status updates
+
+## Testing Strategy
+
+The project includes comprehensive testing:
+
+- **Unit Tests**: Testing individual functions and classes
+- **Widget Tests**: Testing UI components in isolation
+- **Integration Tests**: Testing feature workflows
+- **Mocking**: Using Mockito and Mocktail for test doubles
+
 ## Getting Started
 
-This project is a Flutter application. Some helpful resources:
+### Prerequisites
 
+- Flutter SDK (2.10.0 or higher)
+- Dart SDK (2.16.0 or higher)
+- Supabase account
+- Git
+
+### Setup Steps
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/workvibe.git
+   cd workvibe
+   ```
+
+2. **Install dependencies**
+   ```bash
+   flutter pub get
+   ```
+
+3. **Configure Supabase**
+   - Create a new Supabase project
+   - Run the SQL schema script in the Supabase SQL editor
+   - Update `lib/config/env.dart` with your Supabase URL and anon key
+
+4. **Run the application**
+   ```bash
+   flutter run
+   ```
+
+For more information:
 - [Flutter Documentation](https://docs.flutter.dev/)
 - [Supabase Documentation](https://supabase.io/docs)
+- [Riverpod Documentation](https://riverpod.dev/)
